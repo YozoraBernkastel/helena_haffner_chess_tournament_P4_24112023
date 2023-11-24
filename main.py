@@ -1,5 +1,7 @@
+from view.view import View
+
 def main():
-    print("blabla")
+    View.display_menu()
 
 
 if __name__ == '__main__':
