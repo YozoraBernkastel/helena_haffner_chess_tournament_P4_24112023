@@ -48,4 +48,11 @@ class Game:
         self._tournament = new
 
     # Methods
-
+    def victory_player(self, player="draw"):
+        if player == "draw":
+            self._player_one.total_point(0.5)
+            self._player_two.total_point(0.5)
+        if player == self._player_one:
+            self._player_one.total_point(1)
+        if player == self.player_two:
+            self._player_two.total_point(1)

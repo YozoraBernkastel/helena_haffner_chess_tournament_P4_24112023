@@ -6,6 +6,7 @@ class Player:
         self._age = age
         self._player_chess_id = player_chess_id
         self._opponent_list: dict = {}
+        self._total_point: int = 0
 
     def __repr__(self):
         return f"{self._first_name} {self._family_name}"  #: {self._player_chess_id}"
@@ -31,6 +32,10 @@ class Player:
     def opponent_list(self) -> dict:
         return self.opponent_list
 
+    @property
+    def total_point(self):
+        return self._total_point
+
     # setter
     @first_name.setter
     def first_name(self, new):
@@ -51,6 +56,10 @@ class Player:
     @opponent_list.setter
     def opponent_list(self, new: list):
         self._opponent_list = new
+
+    @total_point.setter
+    def total_point(self, new: int):
+        self._total_point += new
 
     # Methods
     def add_opponent_to_list(self, tournament_name: str, opponent):

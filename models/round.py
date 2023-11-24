@@ -57,19 +57,25 @@ class Round:
         self._tournament = new
 
     # Methods
+    def not_first_round(self):
+        for player in self._player_list:
+            print(player)
+
+    def first_round(self):
+        random.shuffle(self._player_list)
+        for player in self._player_list:  # comment gérer le cas où deux personnes portent le même nom ? Il faut utiliser le chess id mais où ?
+            player_index: int = self.player_list.index(player)
+            if player_index != self._player_list[-1] and player_index % 2 == 0:
+                game = Game(player, self._player_list[player_index + 1], self._round_name, self._tournament)
+                player.add_opponent_to_list(self._tournament, self._player_list[player_index + 1])
+                self._games_list.append(game)
+            else:
+                player.add_opponent_to_list(self._tournament, self._player_list[player_index - 1])
+
     def create_games(self):  # penser à gérer les cas où le nombre de joueurs est impaire!!!!!!!!
         if self.round_number != 1:
-            
-            print("not number one T_T")
-
+            self.not_first_round()
         else:
-            random.shuffle(self._player_list)
-            for player in self._player_list:  # comment gérer le cas où deux personnes portent le même nom ? Il faut utiliser le chess id mais où ?
-                player_index: int = self.player_list.index(player)
-                if player_index != self._player_list[-1] and player_index % 2 == 0:
-                    game = Game(player, self._player_list[player_index + 1], self._round_name, self._tournament)
-                    player.add_opponent_to_list(self._tournament, self._player_list[player_index + 1])
-                    self._games_list.append(game)
-                else:
-                    player.add_opponent_to_list(self._tournament, self._player_list[player_index - 1])
+            self.first_round()
+
 
