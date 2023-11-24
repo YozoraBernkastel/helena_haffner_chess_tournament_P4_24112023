@@ -1,7 +1,8 @@
 class View:
 
     @staticmethod
-    def display_menu() -> bool:
+    def display_menu() -> str:
+        choice =""
         check_answer = False
 
         while not check_answer:
@@ -24,4 +25,4 @@ class View:
             else:
                 print("\nCette commande option n'existe malheureusement pas, veuillez sélectionner une commande valide parmi la liste\n")
 
-        return check_answer
+        return choice

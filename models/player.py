@@ -1,5 +1,6 @@
 class Player:
     def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
+        # générer un id ?????????????????
         self._first_name = first_name
         self._family_name = family_name
         self._age = age
@@ -7,7 +8,7 @@ class Player:
         self._opponent_list: dict = {}
 
     def __repr__(self):
-        return f"{self._first_name} {self._family_name} : {self._player_chess_id}"
+        return f"{self._first_name} {self._family_name}"  #: {self._player_chess_id}"
 
     # getter
     @property
@@ -27,7 +28,7 @@ class Player:
         return self._player_chess_id
 
     @property
-    def opponent_list(self) -> list:
+    def opponent_list(self) -> dict:
         return self.opponent_list
 
     # setter
@@ -53,5 +54,5 @@ class Player:
 
     # Methods
     def add_opponent_to_list(self, tournament_name: str, opponent):
-        self._opponent_list[tournament_name].value.append(opponent)
+        self._opponent_list[tournament_name] = opponent
 
