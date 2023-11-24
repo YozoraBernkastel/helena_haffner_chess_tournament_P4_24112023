@@ -1,45 +1,57 @@
 class Player:
-    def __init__(self, first_name, name, age, player_chess_id):
+    def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
         self._first_name = first_name
-        self._name = name
+        self._family_name = family_name
         self._age = age
         self._player_chess_id = player_chess_id
+        self._opponent_list: dict = {}
 
     def __repr__(self):
-        return f"{self._first_name} {self._name} : {self._player_chess_id}"
+        return f"{self._first_name} {self._family_name} : {self._player_chess_id}"
 
     # getter
     @property
-    def first_name(self):
+    def first_name(self) -> str:
         return self._first_name
 
     @property
-    def name(self):
-        return self._name
+    def family_name(self) -> str:
+        return self._family_name
 
     @property
-    def age(self):
+    def age(self) -> int:
         return self._age
 
     @property
-    def chess_id(self):
+    def chess_id(self) -> str:
         return self._player_chess_id
+
+    @property
+    def opponent_list(self) -> list:
+        return self.opponent_list
 
     # setter
     @first_name.setter
     def first_name(self, new):
         self._first_name = new
 
-    @name.setter
-    def name(self, new):
-        self._name = new
+    @family_name.setter
+    def family_name(self, new: str):
+        self._family_name = new
 
     @age.setter
-    def age(self, new):
+    def age(self, new: int):
         self._age = new
 
     @chess_id.setter
-    def chess_id(self, new):
+    def chess_id(self, new: str):
         self._player_chess_id = new
 
+    @opponent_list.setter
+    def opponent_list(self, new: list):
+        self._opponent_list = new
+
+    # Methods
+    def add_opponent_to_list(self, tournament_name: str, opponent):
+        self._opponent_list[tournament_name].value.append(opponent)
 
