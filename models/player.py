@@ -30,7 +30,7 @@ class Player:
 
     @property
     def opponent_list(self) -> dict:
-        return self.opponent_list
+        return self._opponent_list
 
     @property
     def total_point(self):
@@ -63,5 +63,5 @@ class Player:
 
     # Methods
     def add_opponent_to_list(self, tournament_name: str, opponent):
-        self._opponent_list[tournament_name] = opponent
+        self._opponent_list[tournament_name] = opponent.chess_id
 

@@ -1,17 +1,16 @@
 import random
-
-from models.player import Player
 from models.game import Game
 
 
 class Round:
 
-    def __init__(self, round_number: int, player_list: list, tournament_name: str):
+    def __init__(self, round_number: int, player_list: list, lonely_players_list: list, tournament_name: str):
         # générer un id ?????????????????
         self._round_number = round_number
         self._round_name = f"Round {round_number}"  # utile ?????
         self._player_list: list = player_list
         self._games_list = []
+        self._lonely_players_list = lonely_players_list
         self._tournament = tournament_name  # utile ??????
 
     # getter
@@ -30,6 +29,10 @@ class Round:
     @property
     def games_list(self) -> list:
         return self._games_list
+
+    @property
+    def lonely_list(self) -> list:
+        return self._lonely_players_list
 
     @property
     def tournament(self) -> str:  # utile ?????
@@ -52,34 +55,44 @@ class Round:
     def games_list(self, new: list):
         self._games_list = new
 
+    @lonely_list.setter
+    def lonely_list(self, new: list):
+        self._lonely_players_list = new
+
     @tournament.setter
     def tournament(self, new: str):
         self._tournament = new
 
     # Methods
     def not_first_round(self):
-        for player in self._player_list:
-            print(player)
+        player_list = self.sort_player_list()
+        print(player_list)
+        for player in player_list:
+            player_index: int = self.player_list.index(player)
 
     def first_round(self):
         random.shuffle(self._player_list)
+
+        if len(self._player_list) % 2 != 0:
+            self.lonely_list.append(self._player_list[-1].chess_id)
+            print(self.lonely_list)
+
         for player in self._player_list:
             player_index: int = self.player_list.index(player)
-            if player_index != self._player_list[-1] and player_index % 2 == 0:
+
+            if player_index != self._player_list[-1] and player_index % 2 == 0 and player.chess_id != self.lonely_list[0]:
                 game = Game(player, self._player_list[player_index + 1], self._round_name, self._tournament)
                 player.add_opponent_to_list(self._tournament, self._player_list[player_index + 1])
                 self._games_list.append(game)
             else:
+
                 player.add_opponent_to_list(self._tournament, self._player_list[player_index - 1])
 
-    def create_games(self):  # penser à gérer les cas où le nombre de joueurs est impaire!!!!!!!!
+    def create_games(self):
         if self.round_number != 1:
             self.not_first_round()
         else:
             self.first_round()
 
-    def games_result(self):
-        for game in self._games_list:
-            game.victory_player()
-
-
+    def sort_player_list(self):
+        return sorted(self._player_list, key=lambda x: x.total_point, reverse=True)
