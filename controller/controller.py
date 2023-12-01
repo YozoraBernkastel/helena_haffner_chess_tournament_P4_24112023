@@ -38,10 +38,10 @@ class Controller:
             res = View.asks_result(game)
             game.game_result = res
             print(game.game_result)
-            # ici il faudra exporter le résultat dans un json
+            # todo ici il faudra exporter le résultat dans un json
 
         View.display_players_score(player_list)
-        # créer un export "classement" que l'on met à jour après chaque round.
+        # todo créer un export "classement" que l'on met à jour après chaque round.
         print(frederica.opponent_list)
         print(f"lonely list -> {lonely}")
         around_the_world.not_first_round()

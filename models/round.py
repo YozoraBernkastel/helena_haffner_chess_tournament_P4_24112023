@@ -75,22 +75,21 @@ class Round:
 
     def first_round(self):
         random.shuffle(self._player_list)
+        length_list = len(self._player_list)
 
         if len(self._player_list) % 2 != 0:
             self.lonely_list.append(self._player_list[-1].chess_id)
-            print(self.lonely_list)
+            print(f"lonely player : {self.lonely_list}")
 
-        for player in self._player_list:
-            player_index: int = self.player_list.index(player)
+        for i in range(0, length_list, 2):
 
-            if player_index != self._player_list[-1] and player_index % 2 == 0 and player.chess_id != self.lonely_list[0]:
-                game = Game(player, self._player_list[player_index + 1], self._round_name, self._tournament)
-                # todo inutile bis -> boucler sur les round du tournoi
-                player.add_opponent_to_list(self._tournament, self._player_list[player_index + 1])
+            if len(self._player_list) % 2 == 0 or i != length_list - 1:
+                game = Game(self._player_list[i], self._player_list[i + 1], self._round_name, self._tournament)
+
+            # todo inutile de faire une opponent list -> boucle directement sur les round du tournoi si besoin de l'info
+                self._player_list[i].add_opponent_to_list(self._tournament, self._player_list[i + 1])
+                self._player_list[i + 1].add_opponent_to_list(self._tournament, self._player_list[i])
                 self._games_list.append(game)
-            else:
-                # todo inutile bis -> boucler sur les round du tournoi
-                player.add_opponent_to_list(self._tournament, self._player_list[player_index - 1])
 
     def create_games(self):
         if self.round_number != 1:
