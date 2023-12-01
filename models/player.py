@@ -1,7 +1,7 @@
 class Player:
     def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
-        # générer un id ?????????????????
-        self._first_name = first_name
+        # générer un id ????????????????? Autant utiliser la chess_id
+        self._firstname = first_name
         self._family_name = family_name
         self._age = age
         self._player_chess_id = player_chess_id
@@ -9,12 +9,12 @@ class Player:
         self._total_point: int = 0
 
     def __repr__(self):
-        return f"{self._first_name} {self._family_name}"  #: {self._player_chess_id}"
+        return f"{self._firstname} {self._family_name} ({self._player_chess_id})"  #: {self._player_chess_id}"
 
     # getter
     @property
-    def first_name(self) -> str:
-        return self._first_name
+    def firstname(self) -> str:
+        return self._firstname
 
     @property
     def family_name(self) -> str:
@@ -37,9 +37,9 @@ class Player:
         return self._total_point
 
     # setter
-    @first_name.setter
-    def first_name(self, new):
-        self._first_name = new
+    @firstname.setter
+    def firstname(self, new):
+        self._firstname = new
 
     @family_name.setter
     def family_name(self, new: str):

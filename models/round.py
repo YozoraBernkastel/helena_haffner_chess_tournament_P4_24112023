@@ -63,7 +63,7 @@ class Round:
 
     def first_round(self):
         random.shuffle(self._player_list)
-        for player in self._player_list:  # comment gérer le cas où deux personnes portent le même nom ? Il faut utiliser le chess id mais où ?
+        for player in self._player_list:
             player_index: int = self.player_list.index(player)
             if player_index != self._player_list[-1] and player_index % 2 == 0:
                 game = Game(player, self._player_list[player_index + 1], self._round_name, self._tournament)
@@ -77,5 +77,9 @@ class Round:
             self.not_first_round()
         else:
             self.first_round()
+
+    def games_result(self):
+        for game in self._games_list:
+            game.victory_player()
 
 

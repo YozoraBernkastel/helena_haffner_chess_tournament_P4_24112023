@@ -8,6 +8,8 @@ class Game:
         self._player_two = player_two
         self._round_name = round_name
         self._tournament = tournament
+        self._game_id = f"{round_name}-{player_one.chess_id}-{player_two}"
+        self._game_result: str = "Le match n'est pas terminé"
 
     def __repr__(self):
         return (f"{self._player_one} vs {self._player_two} lors du "
@@ -30,6 +32,14 @@ class Game:
     def tournament(self):
         return self._tournament
 
+    @property
+    def game_id(self):
+        return self._game_id
+
+    @property
+    def game_result(self):
+        return self._game_result
+
     # setter
     @player_one.setter
     def player_one(self, new: Player):
@@ -47,12 +57,22 @@ class Game:
     def tournament(self, new: str):  # utile ????
         self._tournament = new
 
-    # Methods
-    def victory_player(self, player="draw"):
-        if player == "draw":
-            self._player_one.total_point(0.5)
-            self._player_two.total_point(0.5)
-        if player == self._player_one:
-            self._player_one.total_point(1)
-        if player == self.player_two:
-            self._player_two.total_point(1)
+    # NE MARCHE PAS À L'HEURE ACTUELLE
+    @game_result.setter
+    def game_result(self, res: str):
+        if res == "1":
+            self._player_one.total_point = 1
+            self._game_result = f"victoire du joueur {self._player_one}"
+            return
+
+        if res == "2":
+            self._player_two.total_point = 1
+            self._game_result = f"victoire du joueur {self._player_two}"
+            return
+
+        self._player_one.total_point = 0.5
+        self._player_two.total_point = 0.5
+        self._game_result = "match nul"
+
+
+

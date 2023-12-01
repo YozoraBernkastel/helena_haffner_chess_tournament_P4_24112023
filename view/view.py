@@ -1,8 +1,14 @@
+from models.game import Game
+
+
 class View:
 
     @staticmethod
     def display_menu() -> str:
-        choice =""
+        """
+        Offers to the user the possibility to create a tournament, to display the statistics or to quit.
+        """
+        choice = ""
         check_answer = False
 
         while not check_answer:
@@ -23,6 +29,41 @@ class View:
             elif choice == "Q" or choice == "q":
                 break
             else:
-                print("\nCette commande option n'existe malheureusement pas, veuillez sélectionner une commande valide parmi la liste\n")
+                print(
+                    "\nCette option n'existe malheureusement pas, veuillez sélectionner une commande valide parmi la liste\n")
 
         return choice
+
+    @staticmethod
+    def asks_result(game: Game) -> str:
+        """
+        :param game: an object Game
+         Asks the result of the Game in param
+        """
+        choice = ""
+        check_answer = False
+        while not check_answer:
+            print("\nQuel a été le résultat ?\n")
+            print(f"    1) Victoire de {game.player_one}")
+            print(f"    2) Victoire de {game.player_two}")
+            print("    3) Match nul\n")
+            choice = input("")
+            choice = choice.strip()
+
+            if choice == "1" or choice == "2" or choice == "3":
+                check_answer = True
+
+            else:
+                print("Choix invalide")
+
+        return choice
+
+    @staticmethod
+    def display_players_score(player_list: list):
+        """
+        :param player_list: list containing one or more players
+        :return: print the total point of each player.
+        """
+        sorted_list = sorted(player_list, key=lambda x: x.total_point, reverse=True)
+        for player in sorted_list:
+            print(f"{player} -> {player.total_point}")
