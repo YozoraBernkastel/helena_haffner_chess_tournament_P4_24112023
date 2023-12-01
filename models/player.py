@@ -5,7 +5,7 @@ class Player:
         self._family_name = family_name
         self._age = age
         self._player_chess_id = player_chess_id
-        self._opponent_list: dict = {}
+        self._opponent_list: dict = {} # todo inutile -> boucler sur les round du tournoi directement !!!!!!!!!
         self._total_point: int = 0
 
     def __repr__(self):

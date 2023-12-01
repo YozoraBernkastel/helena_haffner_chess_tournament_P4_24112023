@@ -4,6 +4,7 @@ from models.round import Round
 class Tournament:
     def __init__(self, tournament_name: str, players_list: list):
         # générer un id ?????????????????
+        # todo mettre en place le fait
         self._name = tournament_name
         self._players_list: list = players_list
         self._actual_round = 0
@@ -11,7 +12,7 @@ class Tournament:
         self._lonely_players: list = []
 
     def __repr__(self):
-            return f"Tournoi {self._name}"
+        return f"Tournoi {self._name}"
 
     @property
     def name(self):

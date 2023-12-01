@@ -8,6 +8,7 @@ class Controller:
 
     @staticmethod
     def link():
+        # todo demander en début de tournoi à enregistrer les joueurs !! Nécessaire
         choice = View.display_menu()
 
         if choice == "q" or choice == "Q":
@@ -22,6 +23,7 @@ class Controller:
         player_list = [selene, agathe, frederica, fall, ffffff]
 
         # tout ce qui est en dessous sera dans la classe tournament à l'avenir !!!!!!
+        # Il faudra nettoyer un peu !!
         "Set up the round"
         lonely = []
         around_the_world = Round(1, player_list, lonely, "End of the Golden Witch")
@@ -41,7 +43,7 @@ class Controller:
         View.display_players_score(player_list)
         # créer un export "classement" que l'on met à jour après chaque round.
         print(frederica.opponent_list)
-
+        print(f"lonely list -> {lonely}")
         around_the_world.not_first_round()
 
 

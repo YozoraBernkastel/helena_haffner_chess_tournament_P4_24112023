@@ -57,7 +57,6 @@ class Game:
     def tournament(self, new: str):  # utile ????
         self._tournament = new
 
-    # NE MARCHE PAS À L'HEURE ACTUELLE
     @game_result.setter
     def game_result(self, res: str):
         if res == "1":

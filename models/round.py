@@ -3,7 +3,7 @@ from models.game import Game
 
 
 class Round:
-
+    # todo remplacer tournament_name par l'objet Tournament
     def __init__(self, round_number: int, player_list: list, lonely_players_list: list, tournament_name: str):
         # générer un id ?????????????????
         self._round_number = round_number
@@ -69,6 +69,9 @@ class Round:
         print(player_list)
         for player in player_list:
             player_index: int = self.player_list.index(player)
+            # Ne pas oublier que les listes en param de la classe sont en réaloté des pointeurs
+            # donc attention à ne pas pop de joueurs.
+            # Cela facilite la mise à jour de la lonely list du tournoi !!
 
     def first_round(self):
         random.shuffle(self._player_list)
@@ -82,10 +85,11 @@ class Round:
 
             if player_index != self._player_list[-1] and player_index % 2 == 0 and player.chess_id != self.lonely_list[0]:
                 game = Game(player, self._player_list[player_index + 1], self._round_name, self._tournament)
+                # todo inutile bis -> boucler sur les round du tournoi
                 player.add_opponent_to_list(self._tournament, self._player_list[player_index + 1])
                 self._games_list.append(game)
             else:
-
+                # todo inutile bis -> boucler sur les round du tournoi
                 player.add_opponent_to_list(self._tournament, self._player_list[player_index - 1])
 
     def create_games(self):
