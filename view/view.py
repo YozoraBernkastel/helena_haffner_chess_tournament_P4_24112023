@@ -59,6 +59,27 @@ class View:
         return choice
 
     @staticmethod
+    def round_number() -> int:
+        number = ""
+        check_answer = False
+        while not check_answer:
+            print("\n Nombre de Round total ?")
+            number = input("")
+            number = number.strip()
+
+            if int(number) or number == "":
+                check_answer = True
+
+        if number == "":
+            print("Le tournoi se déroulera sur 4 rounds")
+            return 4
+
+        print(f"Le tournoi se déroulera sur {number} rounds")
+        return int(number)
+
+
+
+    @staticmethod
     def display_players_score(player_list: list):
         """
         :param player_list: list containing one or more players

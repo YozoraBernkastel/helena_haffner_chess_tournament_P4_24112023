@@ -2,18 +2,18 @@ from models.player import Player
 
 
 class Game:
-    def __init__(self, player_one: Player, player_two: Player, round_name: str, tournament: str):
+    def __init__(self, player_one: Player, player_two: Player, round_object):
         # générer un id ?????????????????
         self._player_one = player_one
         self._player_two = player_two
-        self._round_name = round_name
-        self._tournament = tournament
-        self._game_id = f"{round_name}-{player_one.chess_id}-{player_two}"
-        self._game_result: str = "Le match n'est pas terminé"
+        self._round = round_object
+        self._tournament = round_object.tournament
+        self._game_id = f"{round}-{player_one.chess_id}-{player_two}"
+        self._game_result: str = "La partie n'est pas terminée"
 
     def __repr__(self):
         return (f"{self._player_one} vs {self._player_two} lors du "
-                f"{self._round_name} du tournoi {self._tournament}")
+                f"{self._round} du tournoi {self._tournament}")
 
     # getter
     @property
@@ -72,6 +72,3 @@ class Game:
         self._player_one.total_point = 0.5
         self._player_two.total_point = 0.5
         self._game_result = "match nul"
-
-
-

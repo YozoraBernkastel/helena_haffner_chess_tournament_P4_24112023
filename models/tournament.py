@@ -1,15 +1,17 @@
 from models.round import Round
+import uuid
 
 
 class Tournament:
-    def __init__(self, tournament_name: str, players_list: list):
-        # générer un id ?????????????????
+    # nombre de round à définir !!! donc osef game_repeat_number
+    def __init__(self, tournament_name: str, players_list: list, game_repeat_number: int):
         # todo mettre en place le fait
         self._name = tournament_name
         self._players_list: list = players_list
-        self._actual_round = 0
         self._rounds_list = []
         self._lonely_players: list = []
+        self._game_repeat = game_repeat_number
+        self._id = uuid.uuid1()
 
     def __repr__(self):
         return f"Tournoi {self._name}"
@@ -23,10 +25,6 @@ class Tournament:
         return self._players_list
 
     @property
-    def actual_round(self):
-        return self._actual_round
-
-    @property
     def rounds_list(self):
         return self._rounds_list
 
@@ -34,6 +32,11 @@ class Tournament:
     def lonely_players(self):
         return self._lonely_players
 
+    @property
+    def id(self):
+        return self._id
+
+    # setter
     @name.setter
     def name(self, new):
         self._name = new
@@ -41,10 +44,6 @@ class Tournament:
     @players_list.setter
     def players_list(self, new):
         self._players_list = new
-
-    @actual_round.setter
-    def actual_round(self, new):
-        self._actual_round = new
 
     @rounds_list.setter
     def rounds_list(self, new: Round):
@@ -54,4 +53,15 @@ class Tournament:
     def lonely_players(self, new: Round):
         self._lonely_players.append(new)
 
+    # methods
+    def create_round(self):
+        print(f"round list taille {len(self.rounds_list)}")
+        around_the_world = Round(self, len(self.rounds_list))
+        around_the_world.create_games()
+        games_list = around_the_world.games_list
+        print(games_list)
+
+        self.rounds_list.append(around_the_world)
+
+        return games_list
 
