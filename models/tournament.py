@@ -55,7 +55,7 @@ class Tournament:
 
     # methods
     def create_round(self):
-        print(f"round list taille {len(self.rounds_list)}")
+        print(f"round list length {len(self.rounds_list)}")
         around_the_world = Round(self, len(self.rounds_list))
         around_the_world.create_games()
         games_list = around_the_world.games_list

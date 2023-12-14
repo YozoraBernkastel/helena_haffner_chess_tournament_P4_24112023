@@ -3,13 +3,11 @@ from models.game import Game
 
 
 class Round:
-    # todo remplacer tournament_name par l'objet Tournament
     def __init__(self, tournament, round_number: int):
         # générer un id ?????????????????
         self._round_number = round_number
         self._games_list = []
         self._tournament = tournament
-        self._players_list = tournament.players_list
 
     def __repr__(self):
         return f"Round {self.round_number}"
@@ -25,7 +23,7 @@ class Round:
 
     @property
     def players_list(self):
-        return self._players_list
+        return self.tournament.players_list
 
     @property
     def tournament(self):
@@ -47,26 +45,23 @@ class Round:
     # Methods
     def set_round(self):
         length_list = len(self.tournament.players_list)
-        players_list = self.players_list
+        players_list = self.tournament.players_list
 
         if len(players_list) % 2 != 0:
             self.tournament.lonely_players.append(players_list[-1].chess_id)
             print(f"lonely player : {self._tournament.lonely_players}")
 
         for i in range(0, length_list, 2):
-
-            if len(self.tournament.players_list) % 2 == 0 or i != length_list - 1:
+            if len(players_list) % 2 == 0 or i != length_list - 1:
                 game = Game(players_list[i], players_list[i + 1], self)
 
                 self._games_list.append(game)
 
     def create_games(self):
-        if self.round_number == 0:
-            random.shuffle(self.tournament.players_list)
-
+        if self.round_number != 0:
+            self.tournament.players_list = self.sort_player_list()
         else:
-            # todo ne fonctionne pas !!! à retravailler !!!
-            self.sort_player_list()
+            random.shuffle(self.tournament.players_list)
 
         self.set_round()
 
