@@ -35,6 +35,9 @@ class Controller:
 
             # Now the results
             for game in games_list:
+                if game is games_list[0]:
+                    View.show_round_number(game.belong_round)
+
                 res = View.asks_result(game)
                 game.game_result = res
                 # todo ici il faudra exporter le résultat dans un json

@@ -37,7 +37,7 @@ class View:
 
     @staticmethod
     def show_round_number(actual_round: Round):
-        print(f"########   Round {actual_round.round_number}    ########")
+        print(f"\n########   Round {actual_round.round_number}    ########")
 
     @staticmethod
     def asks_result(game: Game) -> str:
@@ -81,8 +81,6 @@ class View:
 
         print(f"Le tournoi se déroulera sur {number} rounds")
         return int(number)
-
-
 
     @staticmethod
     def display_players_score(player_list: list):
