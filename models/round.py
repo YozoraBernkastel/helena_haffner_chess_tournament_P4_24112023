@@ -2,6 +2,7 @@ import random
 from models.game import Game
 import datetime
 import operator as op
+from copy import deepcopy
 
 
 class Round:
@@ -60,7 +61,7 @@ class Round:
 
     @ending.setter
     def ending(self, date):
-        self._ending_time = datetime.date
+        self._ending_time = date
 
     @lonely_player.setter
     def lonely_player(self, new):
@@ -78,19 +79,24 @@ class Round:
         self.lonely_player = round_lonely_player
 
     def set_round(self):
-        players_list = self.tournament.players_list
-        length_list = len(players_list)
 
-        if length_list % 2 != 0:
+        players_list = self.tournament.players_list
+        round_players_list = []
+
+        if len(players_list) % 2 != 0:
+            # if there is more rounds than players number,
             if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
-                # if there is more round than players number, reset the list when all of them skipped a round
+                # reset the lonely players list when all of them skipped a round
                 self.tournament.lonely_players.clear()
 
             self.choose_lonely_player()
+            # remove the lonely player of the round to the players_list
+            print(f"this round lonely ----> {self.lonely_player}")
+            round_players_list: list = [p for p in players_list if p is not self._lonely_player]
 
-        for i in range(0, length_list, 2):
-            if length_list % 2 == 0 or i != length_list - 1:
-                game = Game(players_list[i], players_list[i + 1], self)
+        for i in range(0, len(round_players_list), 2):
+            if len(round_players_list) % 2 == 0 or i != len(round_players_list) - 1:
+                game = Game(round_players_list[i], round_players_list[i + 1], self)
 
                 self._games_list.append(game)
 
