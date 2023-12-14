@@ -1,3 +1,4 @@
+from models.round import Round
 from models.game import Game
 
 
@@ -35,6 +36,10 @@ class View:
         return choice
 
     @staticmethod
+    def show_round_number(actual_round: Round):
+        print(f"\n########   Round {actual_round.round_number}    ########")
+
+    @staticmethod
     def asks_result(game: Game) -> str:
         """
         :param game: an object Game
@@ -57,6 +62,25 @@ class View:
                 print("Choix invalide")
 
         return choice
+
+    @staticmethod
+    def round_number() -> int:
+        number = ""
+        check_answer = False
+        while not check_answer:
+            print("\n Nombre de Round total ?")
+            number = input("")
+            number = number.strip()
+
+            if int(number) or number == "":
+                check_answer = True
+
+        if number == "":
+            print("Le tournoi se déroulera sur 4 rounds")
+            return 4
+
+        print(f"Le tournoi se déroulera sur {number} rounds")
+        return int(number)
 
     @staticmethod
     def display_players_score(player_list: list):

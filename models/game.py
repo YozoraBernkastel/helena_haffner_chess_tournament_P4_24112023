@@ -2,18 +2,17 @@ from models.player import Player
 
 
 class Game:
-    def __init__(self, player_one: Player, player_two: Player, round_name: str, tournament: str):
+    def __init__(self, player_one: Player, player_two: Player, round_object):
         # générer un id ?????????????????
         self._player_one = player_one
         self._player_two = player_two
-        self._round_name = round_name
-        self._tournament = tournament
-        self._game_id = f"{round_name}-{player_one.chess_id}-{player_two}"
-        self._game_result: str = "Le match n'est pas terminé"
+        self._round = round_object
+        self._tournament = round_object.tournament
+        self._game_id = f"{round}-{player_one.chess_id}-{player_two}"
+        self._game_result: str = "La partie n'est pas terminée"
 
     def __repr__(self):
-        return (f"{self._player_one} vs {self._player_two} lors du "
-                f"{self._round_name} du tournoi {self._tournament}")
+        return f"{self._player_one} vs {self._player_two}"
 
     # getter
     @property
@@ -25,8 +24,8 @@ class Game:
         return self._player_two
 
     @property
-    def round_name(self):
-        return self._round_name
+    def belong_round(self):
+        return self._round
 
     @property
     def tournament(self):
@@ -49,30 +48,26 @@ class Game:
     def player_two(self, new: Player):
         self._player_two = new
 
-    @round_name.setter
-    def round_name(self, new: str):  # utile ????
-        self._round_name = new
+    @belong_round.setter
+    def belong_round(self, new: str):  # utile ????
+        self._round = new
 
     @tournament.setter
     def tournament(self, new: str):  # utile ????
         self._tournament = new
 
-    # NE MARCHE PAS À L'HEURE ACTUELLE
     @game_result.setter
     def game_result(self, res: str):
         if res == "1":
             self._player_one.total_point = 1
-            self._game_result = f"victoire du joueur {self._player_one}"
+            self._game_result = f"victoire de {self._player_one}"
             return
 
         if res == "2":
             self._player_two.total_point = 1
-            self._game_result = f"victoire du joueur {self._player_two}"
+            self._game_result = f"victoire de {self._player_two}"
             return
 
         self._player_one.total_point = 0.5
         self._player_two.total_point = 0.5
         self._game_result = "match nul"
-
-
-
