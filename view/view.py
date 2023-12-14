@@ -21,7 +21,7 @@ class View:
             choice = choice.strip()
 
             if choice == "1":
-                print("\nTournoi lancé, go go go !!!!")
+                print("\nNouveau tournoi lancé !!!")
                 check_answer = True
 
             elif choice == "2":
@@ -37,7 +37,19 @@ class View:
 
     @staticmethod
     def show_round_number(actual_round: Round):
-        print(f"\n########   Round {actual_round.round_number}    ########")
+        print(f"     ########   {actual_round}    ########\n")
+
+    @staticmethod
+    def show_all_games_of_round(games_list: list):
+        print(f"Liste des parties du round :")
+        for game in games_list:
+            print(game)
+        print("\n")
+
+    @staticmethod
+    def show_round_lonely_player(actual_round: Round):
+        if len(actual_round.tournament.players_list) % 2 != 0:
+            print(f"{actual_round.lonely_player} ne jouera pas durant ce Round.\n")
 
     @staticmethod
     def asks_result(game: Game) -> str:
@@ -48,7 +60,7 @@ class View:
         choice = ""
         check_answer = False
         while not check_answer:
-            print("\nQuel a été le résultat ?\n")
+            print(f"Quel a été le résultat de la partie opposant {game.player_one} à {game.player_two}?\n")
             print(f"    1) Victoire de {game.player_one}")
             print(f"    2) Victoire de {game.player_two}")
             print("    3) Match nul\n")
@@ -65,21 +77,22 @@ class View:
 
     @staticmethod
     def round_number() -> int:
+        """View asking for the number total of round for the new tournament.
+        By Default, there is 4 rounds"""
         number = ""
         check_answer = False
         while not check_answer:
-            print("\n Nombre de Round total ?")
+            print("\n Nombre total de Rounds ?")
             number = input("")
             number = number.strip()
 
-            if int(number) or number == "":
+            if number == "" or int(number):
                 check_answer = True
 
         if number == "":
-            print("Le tournoi se déroulera sur 4 rounds")
-            return 4
+            number = 4
 
-        print(f"Le tournoi se déroulera sur {number} rounds")
+        print(f"Le tournoi se déroulera sur {number} rounds\n")
         return int(number)
 
     @staticmethod
@@ -88,6 +101,8 @@ class View:
         :param player_list: list containing one or more players
         :return: print the total point of each player.
         """
+        print("Liste des joueurs prenant part au tournoi :\n")
         sorted_list = sorted(player_list, key=lambda x: x.total_point, reverse=True)
         for player in sorted_list:
-            print(f"{player} -> {player.total_point}")
+            print(f"    {player} -> {player.total_point}")
+        print("\n")
