@@ -37,6 +37,8 @@ class Controller:
             for game in games_list:
                 if game is games_list[0]:
                     View.show_round_number(game.belong_round)
+                    View.show_round_lonely_player(game.belong_round)
+                    View.show_all_games_of_round(games_list)
 
                 res = View.asks_result(game)
                 game.game_result = res
@@ -47,6 +49,9 @@ class Controller:
             games_list[-1].belong_round.ending = datetime.datetime.now
             print(f"Ending Time :::: {games_list[-1].belong_round.ending}")
             # todo créer un export "classement" que l'on met à jour après chaque round.
+
+            # todo supprimer quand plus nécessaire ou conserver pour la démonstration ??????
+            #  Peut-être améliorer l'affichage dans ce cas
             print(f"lonely list -> {tournament.lonely_players}\n\n")
 
 

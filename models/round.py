@@ -79,7 +79,6 @@ class Round:
         self.lonely_player = round_lonely_player
 
     def set_round(self):
-
         players_list = self.tournament.players_list
         round_players_list = []
 
@@ -91,13 +90,11 @@ class Round:
 
             self.choose_lonely_player()
             # remove the lonely player of the round to the players_list
-            print(f"this round lonely ----> {self.lonely_player}")
             round_players_list: list = [p for p in players_list if p is not self._lonely_player]
-
+        
         for i in range(0, len(round_players_list), 2):
             if len(round_players_list) % 2 == 0 or i != len(round_players_list) - 1:
                 game = Game(round_players_list[i], round_players_list[i + 1], self)
-
                 self._games_list.append(game)
 
     def create_games(self):
