@@ -4,21 +4,28 @@ import uuid
 
 class Tournament:
     # nombre de round à définir !!! donc osef game_repeat_number
-    def __init__(self, tournament_name: str, players_list: list, game_repeat_number: int):
-        # todo mettre en place le fait
+    def __init__(self, tournament_name: str, location: str, players_list: list, game_repeat_number: int):
         self._name = tournament_name
+        self._location = location
         self._players_list: list = players_list
         self._rounds_list = []
         self._lonely_players: list = []
         self._game_repeat = game_repeat_number
         self._id = uuid.uuid1()
+        # todo quel genre de description ? Une parlant de détails spécificiques décidés avant le tournoi ou plutôt
+        #  des commentaires à faire suite au déroulé du tournoi (donc à ajouter en fin de tournoi) ?
+        self._description = ""
 
     def __repr__(self):
-        return f"Tournoi {self._name}"
+        return f"Tournoi {self.name} de {self.location}"
 
     @property
     def name(self):
         return self._name
+
+    @property
+    def location(self):
+        return self._location
 
     @property
     def players_list(self):
@@ -56,7 +63,7 @@ class Tournament:
     # methods
     def create_round(self):
         print(f"round list length {len(self.rounds_list)}")
-        around_the_world = Round(self, len(self.rounds_list))
+        around_the_world = Round(self, len(self.rounds_list) + 1)
         around_the_world.create_games()
         games_list = around_the_world.games_list
         print(games_list)

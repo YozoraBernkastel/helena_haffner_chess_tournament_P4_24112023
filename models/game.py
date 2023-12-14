@@ -12,8 +12,7 @@ class Game:
         self._game_result: str = "La partie n'est pas terminée"
 
     def __repr__(self):
-        return (f"{self._player_one} vs {self._player_two} lors du "
-                f"{self._round} du tournoi {self._tournament}")
+        return f"{self._player_one} vs {self._player_two}"
 
     # getter
     @property
@@ -25,8 +24,8 @@ class Game:
         return self._player_two
 
     @property
-    def round_name(self):
-        return self._round_name
+    def belong_round(self):
+        return self._round
 
     @property
     def tournament(self):
@@ -49,9 +48,9 @@ class Game:
     def player_two(self, new: Player):
         self._player_two = new
 
-    @round_name.setter
-    def round_name(self, new: str):  # utile ????
-        self._round_name = new
+    @belong_round.setter
+    def belong_round(self, new: str):  # utile ????
+        self._round = new
 
     @tournament.setter
     def tournament(self, new: str):  # utile ????

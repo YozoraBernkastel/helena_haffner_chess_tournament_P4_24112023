@@ -3,6 +3,7 @@ from models.player import Player
 from models.round import Round
 from models.game import Game
 from view.view import View
+import datetime
 
 
 class Controller:
@@ -27,7 +28,7 @@ class Controller:
 
         View.display_players_score(player_list)
 
-        tournament = Tournament("Chessy", player_list,  number_of_round)
+        tournament = Tournament("Chessy","Strasbourg", player_list,  number_of_round)
 
         while len(tournament.rounds_list) != number_of_round:
             games_list = tournament.create_round()
@@ -36,10 +37,15 @@ class Controller:
             for game in games_list:
                 res = View.asks_result(game)
                 game.game_result = res
-                print(tournament.rounds_list[len(tournament.rounds_list)-1].games_list)
                 # todo ici il faudra exporter le résultat dans un json
 
             View.display_players_score(player_list)
+            # todo vérifier que les dates de starting time et ending time sont correctes -> pour le moment le print donne le type
+            games_list[-1].belong_round.ending = datetime.datetime.now
+            print(games_list[-1].belong_round.ending)
             # todo créer un export "classement" que l'on met à jour après chaque round.
-            print(f"lonely list -> {tournament.lonely_players}")
+            print(f"lonely list -> {tournament.lonely_players}\n\n")
+
+
+
 

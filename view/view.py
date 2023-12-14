@@ -1,3 +1,4 @@
+from models.round import Round
 from models.game import Game
 
 
@@ -33,6 +34,10 @@ class View:
                     "\nCette option n'existe malheureusement pas, veuillez sélectionner une commande valide parmi la liste\n")
 
         return choice
+
+    @staticmethod
+    def show_round_number(actual_round: Round):
+        print(f"########   Round {actual_round.round_number}    ########")
 
     @staticmethod
     def asks_result(game: Game) -> str:
