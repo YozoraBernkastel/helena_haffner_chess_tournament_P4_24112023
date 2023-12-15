@@ -61,6 +61,9 @@ class Tournament:
         self._lonely_players.append(new)
 
     # methods
+    def odd_players_number(self) -> bool:
+        return len(self.players_list) % 2 != 0
+
     def create_round(self):
         around_the_world = Round(self, len(self.rounds_list) + 1)
         around_the_world.create_games()
@@ -69,4 +72,36 @@ class Tournament:
         self.rounds_list.append(around_the_world)
 
         return games_list
+
+    def no_repeat_game(self, actual_player, round_players: list) -> list:
+        possible_opponents = []
+        for opponent in round_players:
+            if actual_player is opponent:
+                continue
+
+            already_played = False
+            if len(self.rounds_list) < len(round_players):
+                for r in self.rounds_list:
+                    for game in r.games_list:
+                        if ((game.player_one is actual_player and game.player_two is opponent) or
+                                (game.player_one is opponent and game.player_two is actual_player)):
+                            already_played = True
+                            break
+                if not already_played:
+                    possible_opponents.append(opponent)
+            else:
+                for r in self.rounds_list[:-len(round_players)]:
+                    for game in r.games_list:
+                        if ((game.player_one is actual_player and game.player_two is opponent) or
+                                (game.player_one is opponent and game.player_two is actual_player)):
+                            already_played = True
+                            break
+                if not already_played:
+                    possible_opponents.append(opponent)
+
+        return possible_opponents
+
+
+
+
 

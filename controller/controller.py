@@ -26,7 +26,7 @@ class Controller:
 
         player_list = [selene, agathe, frederica, fall, ffffff]
 
-        View.display_players_score(player_list)
+        View.display_players_score(player_list, True)
 
         tournament = Tournament("Chessy","Strasbourg", player_list,  number_of_round)
 
@@ -44,9 +44,9 @@ class Controller:
                 game.game_result = res
                 # todo ici il faudra exporter le résultat dans un json
 
-            View.display_players_score(player_list)
+            View.display_players_score(player_list, False)
             # todo vérifier que les dates de starting time et ending time sont correctes -> pour le moment le print donne le type
-            games_list[-1].belong_round.ending = datetime.datetime.now
+            games_list[-1].belong_round.ending = datetime.datetime.now()
             print(f"Ending Time :::: {games_list[-1].belong_round.ending}")
             # todo créer un export "classement" que l'on met à jour après chaque round.
 
