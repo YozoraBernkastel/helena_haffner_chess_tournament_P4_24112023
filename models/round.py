@@ -110,6 +110,8 @@ class Round:
         # todo ne règle pas le problème si le problème arrive alors qu'il ne reste qu'un joueur pouvant être observateur !!
         # todo boucle while mal placée on dirait
         while not approved_round:
+            if len(self.games_list) < 0:
+                self.games_list.clear() # todo ne marche pas et attention à retirer les points en trop
             round_players_list = self.compute_lonely() if self.tournament.odd_players_number else self.tournament.players_list
             if self.round_number != 1:
                 self.tournament.players_list = self.sort_player_list()
