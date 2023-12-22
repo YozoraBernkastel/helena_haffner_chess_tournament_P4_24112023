@@ -76,7 +76,6 @@ class Round:
     def choose_lonely_player(self):
         not_lonely_list = self.not_lonely_yet_list(self)
         round_lonely_player = random.choice(not_lonely_list)
-        self.tournament.lonely_players.append(round_lonely_player)
         self.lonely_player = round_lonely_player
 
     def compute_lonely(self):
@@ -84,6 +83,7 @@ class Round:
         if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
             # reset the lonely players list when all of them skipped a round
             self.tournament.lonely_players.clear()
+            print("coucou")
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
@@ -108,11 +108,10 @@ class Round:
         # relaunch all the round if there is a problem during the construction of it
         approved_round = False
         # todo ne règle pas le problème si le problème arrive alors qu'il ne reste qu'un joueur pouvant être observateur !!
-        # todo boucle while mal placée on dirait
         while not approved_round:
-            if len(self.games_list) < 0:
-                self.games_list.clear() # todo ne marche pas et attention à retirer les points en trop
-            round_players_list = self.compute_lonely() if self.tournament.odd_players_number else self.tournament.players_list
+            if len(self.games_list) > 0:
+                self.games_list.clear()
+            round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
             if self.round_number != 1:
                 self.tournament.players_list = self.sort_player_list()
                 approved_round = self.not_first_round(round_players_list)
@@ -120,6 +119,8 @@ class Round:
                 random.shuffle(self.tournament.players_list)
                 self.first_round(round_players_list)
                 approved_round = True
+
+        self.tournament.lonely_players.append(self.lonely_player)
 
     def sort_player_list(self):
         return sorted(self.tournament.players_list, key=lambda x: x.total_point, reverse=True)
