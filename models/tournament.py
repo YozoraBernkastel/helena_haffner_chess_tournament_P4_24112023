@@ -92,16 +92,6 @@ class Tournament:
             else:
 
                 round_range = len(self.players_list)-3 if self.odd_players_number() else len(self.players_list)-2
-                # todo peut encore boucler à l'infinie s'il ne reste qu'un lonely possible et qu'à cause de l'attribution
-                #  des parties par point on tombe sur un cas où le second match a été joué lors des deux derniers tours
-                #  exemple Fall lonely du tour 10, frederica et hipolythe ont le plus de points et ne se sont pas
-                #  affrontés lors des deux derniers tours donc sont mis l'un contre l'autre, ne laissant que la partie
-                #  agathe contre Sélène possible en second même si elle a été joué au round 9.
-                #  Possibilité de mettre la liste dans l'autre sens pour commencer à chercher un adversaire à Sélène
-                #  mais cette astuce ne marche plus si on a 7 joueurs à la place de 5 j'ai l'impression (à tester)
-                #  peut-être couper au hasard la liste en deux en rand.random(joueurs) -> à partir du résultat, couper
-                #  la liste en deux et mettre le bout de liste avec le joueur tiré au sort en début de liste lorsqu'on
-                #  refusionne les deux ????
                 for r in self.rounds_list[-round_range:]:
                     for game in r.games_list:
                         if ((game.player_one is actual_player and game.player_two is opponent) or
@@ -110,8 +100,7 @@ class Tournament:
                             break
                 if not already_played:
                     possible_opponents.append(opponent)
-        print(f"player {actual_player}")
-        print(f"possible opponent list ---> {possible_opponents}")
+
         return possible_opponents
 
 

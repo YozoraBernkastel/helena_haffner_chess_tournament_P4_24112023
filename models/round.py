@@ -83,7 +83,6 @@ class Round:
         if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
             # reset the lonely players list when all of them skipped a round
             self.tournament.lonely_players.clear()
-            print("coucou")
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
@@ -94,24 +93,41 @@ class Round:
                 self._games_list.append(game)
 
     def not_first_round(self, round_players: list) -> bool:
+        count = 0
+        full_players_list = []
+
+        for player in round_players:
+            full_players_list.append(player)
+
         while len(round_players) > 1:
+            count += 1
             for player in round_players:
-                print(f"round players --> {round_players}")
+
+                if count > 2:
+                    self.games_list.clear()
+                    round_players.clear()
+
+                    for p in full_players_list:
+                        round_players.append(p)
+
+                    random.shuffle(round_players)
+                    count = 0
+
                 possible_opponents = self.tournament.no_repeat_game(player, round_players)
 
                 if len(possible_opponents) == 0:
-                    return False
+                    continue
+
                 game = Game(player, possible_opponents[0], self)
                 self._games_list.append(game)
                 round_players.remove(player)
                 round_players.remove(possible_opponents[0])
-                print(f"round players {round_players}")
-
         return True
 
     def create_games(self):
         # relaunch all the round if there is a problem during the construction of it
         approved_round = False
+
         # todo ne règle pas le problème si le problème arrive alors qu'il ne reste qu'un joueur pouvant être observateur !!
         while not approved_round:
             if len(self.games_list) > 0:
@@ -120,8 +136,6 @@ class Round:
             if self.round_number != 1:
                 round_players_list = self.sort_custom_player_list(round_players_list)
                 approved_round = self.not_first_round(round_players_list)
-                if approved_round:
-                    print("coucou")
             else:
                 random.shuffle(round_players_list)
                 self.first_round(round_players_list)
