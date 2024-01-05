@@ -23,8 +23,12 @@ class Controller:
         frederica = Player("Frederica", "Majou", 7803, "11aa11")
         fall = Player("Fall", "Paradox", 7524, "22qb55")
         fipolyte = Player("Hipolyte", "Chimera", 4578, "bbbbb8888")
+        sophie = Player("Sophie", "Spring", 22, "15abg4")
+        octave = Player("Octave", "Leblanc", 38, "88ok4uh8")
+        diane = Player("Diane", "Tsuki", 7803, "11a12411")
+        mikako = Player("Mikako", "Tantei", 7524, "22bhhij55")
 
-        player_list = [selene, agathe, frederica, fall]
+        player_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
 
         View.display_players_score(player_list, True)
 

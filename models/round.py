@@ -94,14 +94,19 @@ class Round:
                 self._games_list.append(game)
 
     def not_first_round(self, round_players: list) -> bool:
-        for player in round_players:
-            possible_opponents = self.tournament.no_repeat_game(player, round_players)
-            if len(possible_opponents) == 0:
-                return False
-            game = Game(player, possible_opponents[0], self)
-            self._games_list.append(game)
-            round_players.remove(player)
-            round_players.remove(possible_opponents[0])
+        while len(round_players) > 1:
+            for player in round_players:
+                print(f"round players --> {round_players}")
+                possible_opponents = self.tournament.no_repeat_game(player, round_players)
+
+                if len(possible_opponents) == 0:
+                    return False
+                game = Game(player, possible_opponents[0], self)
+                self._games_list.append(game)
+                round_players.remove(player)
+                round_players.remove(possible_opponents[0])
+                print(f"round players {round_players}")
+
         return True
 
     def create_games(self):
@@ -113,14 +118,21 @@ class Round:
                 self.games_list.clear()
             round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
             if self.round_number != 1:
-                self.tournament.players_list = self.sort_player_list()
+                round_players_list = self.sort_custom_player_list(round_players_list)
                 approved_round = self.not_first_round(round_players_list)
+                if approved_round:
+                    print("coucou")
             else:
-                random.shuffle(self.tournament.players_list)
+                random.shuffle(round_players_list)
                 self.first_round(round_players_list)
                 approved_round = True
 
         self.tournament.lonely_players.append(self.lonely_player)
 
+    @staticmethod
+    def sort_custom_player_list(players_list):
+        return sorted(players_list, key=lambda x: x.total_point, reverse=True)
+
     def sort_player_list(self):
-        return sorted(self.tournament.players_list, key=lambda x: x.total_point, reverse=True)
+        return self.sort_custom_player_list(self.tournament.players_list)
+
