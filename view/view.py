@@ -1,6 +1,9 @@
+import random
+
 from models.round import Round
 from models.game import Game
 # from rich.console import console
+from settings import settings
 
 
 class View:
@@ -58,6 +61,7 @@ class View:
         :param game: an object Game
          Asks the result of the Game in param
         """
+
         choice = ""
         check_answer = False
         while not check_answer:
@@ -65,6 +69,9 @@ class View:
             print(f"    1) Victoire de {game.player_one}")
             print(f"    2) Victoire de {game.player_two}")
             print("    3) Match nul\n")
+            if settings.AUTOCOMPLETE:
+                return str(random.randint(1, 3))
+
             choice = input("")
             choice = choice.strip()
 

@@ -73,12 +73,9 @@ class Tournament:
 
         return games_list
 
-    def no_repeat_game(self, actual_player, round_players: list) -> list:
+    def no_repeat_game(self, actual_player, round_possible_opponents: list) -> list:
         possible_opponents = []
-        for opponent in round_players:
-            if actual_player is opponent:
-                continue
-
+        for opponent in round_possible_opponents:
             already_played = False
             if len(self.rounds_list) < len(self.players_list) - 2:
                 for r in self.rounds_list:
@@ -90,7 +87,6 @@ class Tournament:
                 if not already_played:
                     possible_opponents.append(opponent)
             else:
-
                 round_range = len(self.players_list)-3 if self.odd_players_number() else len(self.players_list)-2
                 for r in self.rounds_list[-round_range:]:
                     for game in r.games_list:

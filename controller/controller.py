@@ -2,7 +2,8 @@ from models.tournament import Tournament
 from models.player import Player
 from view.view import View
 import datetime
-from extractor.player_list_extract import extract_global_player_list
+from export.export_player_data import export_player_list
+from export.export_tournament_data import extract_tournament_data
 
 
 class Controller:
@@ -32,7 +33,7 @@ class Controller:
         View.display_players_score(players_list, True)
 
         tournament = Tournament("Chessy", "Strasbourg", players_list,  number_of_round)
-        extract_global_player_list(players_list)
+        extract_tournament_data(tournament)
 
         while len(tournament.rounds_list) != number_of_round:
             games_list = tournament.create_round()
