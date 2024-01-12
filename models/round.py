@@ -1,8 +1,8 @@
 import random
-from models.game import Game
 import datetime
 import operator as op
-from copy import deepcopy
+
+from models.game import Game
 
 
 class Round:
@@ -10,7 +10,7 @@ class Round:
         self._round_number = round_number
         self._games_list = []
         self._tournament = tournament
-        self._starting_time = datetime.datetime.now
+        self._starting_time = datetime.datetime.now()
         self._ending_time = None
         self._lonely_player = None
 
@@ -72,38 +72,81 @@ class Round:
     def not_lonely_yet_list(self) -> list:
         return [i for i in self.tournament.players_list if op.countOf(self.tournament.lonely_players, i) == 0]
 
+    # remove the lonely player of the round to the players_list
     def choose_lonely_player(self):
         not_lonely_list = self.not_lonely_yet_list(self)
         round_lonely_player = random.choice(not_lonely_list)
-        self.tournament.lonely_players.append(round_lonely_player)
         self.lonely_player = round_lonely_player
 
-    def set_round(self):
-        players_list = self.tournament.players_list
-        round_players_list = []
+    def compute_lonely(self):
+        # if there is more rounds than players number,
+        if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
+            # reset the lonely players list when all of them skipped a round
+            self.tournament.lonely_players.clear()
+        self.choose_lonely_player()
+        return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
-        if len(players_list) % 2 != 0:
-            # if there is more rounds than players number,
-            if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
-                # reset the lonely players list when all of them skipped a round
-                self.tournament.lonely_players.clear()
-
-            self.choose_lonely_player()
-            # remove the lonely player of the round to the players_list
-            round_players_list: list = [p for p in players_list if p is not self._lonely_player]
-        
-        for i in range(0, len(round_players_list), 2):
-            if len(round_players_list) % 2 == 0 or i != len(round_players_list) - 1:
-                game = Game(round_players_list[i], round_players_list[i + 1], self)
+    def first_round(self, round_players: list):
+        for i in range(0, len(round_players), 2):
+            if len(round_players) % 2 == 0 or i != len(round_players) - 1:
+                game = Game(round_players[i], round_players[i + 1], self)
                 self._games_list.append(game)
 
-    def create_games(self):
-        if self.round_number != 1:
-            self.tournament.players_list = self.sort_player_list()
-        else:
-            random.shuffle(self.tournament.players_list)
+    def not_first_round(self, round_players: list) -> bool:
+        count = 0
+        full_players_list = []
 
-        self.set_round()
+        for player in round_players:
+            full_players_list.append(player)
+
+        while len(round_players) > 1:
+            count += 1
+            for player in round_players:
+
+                if count > 2:
+                    self.games_list.clear()
+                    round_players.clear()
+
+                    for p in full_players_list:
+                        round_players.append(p)
+
+                    random.shuffle(round_players)
+                    count = 0
+
+                possible_opponents = self.tournament.no_repeat_game(player, round_players)
+
+                if len(possible_opponents) == 0:
+                    continue
+
+                game = Game(player, possible_opponents[0], self)
+                self._games_list.append(game)
+                round_players.remove(player)
+                round_players.remove(possible_opponents[0])
+        return True
+
+    def create_games(self):
+        # relaunch all the round if there is a problem during the construction of it
+        approved_round = False
+
+        # todo ne règle pas le problème si le problème arrive alors qu'il ne reste qu'un joueur pouvant être observateur !!
+        while not approved_round:
+            if len(self.games_list) > 0:
+                self.games_list.clear()
+            round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
+            if self.round_number != 1:
+                round_players_list = self.sort_custom_player_list(round_players_list)
+                approved_round = self.not_first_round(round_players_list)
+            else:
+                random.shuffle(round_players_list)
+                self.first_round(round_players_list)
+                approved_round = True
+
+        self.tournament.lonely_players.append(self.lonely_player)
+
+    @staticmethod
+    def sort_custom_player_list(players_list):
+        return sorted(players_list, key=lambda x: x.total_point, reverse=True)
 
     def sort_player_list(self):
-        return sorted(self.tournament.players_list, key=lambda x: x.total_point, reverse=True)
+        return self.sort_custom_player_list(self.tournament.players_list)
+

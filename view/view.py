@@ -1,5 +1,6 @@
 from models.round import Round
 from models.game import Game
+# from rich.console import console
 
 
 class View:
@@ -48,7 +49,7 @@ class View:
 
     @staticmethod
     def show_round_lonely_player(actual_round: Round):
-        if len(actual_round.tournament.players_list) % 2 != 0:
+        if actual_round.tournament.odd_players_number():
             print(f"{actual_round.lonely_player} ne jouera pas durant ce Round.\n")
 
     @staticmethod
@@ -96,12 +97,17 @@ class View:
         return int(number)
 
     @staticmethod
-    def display_players_score(player_list: list):
+    def display_players_score(player_list: list, first_display=False):
         """
+        :param first_display:
         :param player_list: list containing one or more players
         :return: print the total point of each player.
         """
-        print("Liste des joueurs prenant part au tournoi :\n")
+        if first_display:
+            print("Liste des joueurs prenant part au tournoi :\n")
+        else:
+            print("Classement actuel :\n")
+
         sorted_list = sorted(player_list, key=lambda x: x.total_point, reverse=True)
         for player in sorted_list:
             print(f"    {player} -> {player.total_point}")

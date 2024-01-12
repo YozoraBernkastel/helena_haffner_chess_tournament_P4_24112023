@@ -1,6 +1,5 @@
 class Player:
     def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
-        # générer un id ????????????????? Autant utiliser la chess_id
         self._firstname = first_name
         self._family_name = family_name
         self._age = age
