@@ -1,3 +1,5 @@
+from export.export_player_data import export_player_list
+
 class Player:
     def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
         self._firstname = first_name
@@ -5,6 +7,7 @@ class Player:
         self._age = age
         self._player_chess_id = player_chess_id
         self._total_point: int = 0
+        self.player_save()
 
     def __repr__(self):
         return f"{self._firstname} {self._family_name} ({self._player_chess_id})"
@@ -52,5 +55,5 @@ class Player:
         self._total_point += new
 
     # Methods
-
-
+    def player_save(self):
+        export_player_list(self)

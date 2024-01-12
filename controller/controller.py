@@ -1,9 +1,9 @@
 from models.tournament import Tournament
 from models.player import Player
-from models.round import Round
-from models.game import Game
 from view.view import View
 import datetime
+from export.export_player_data import export_player_list
+from export.export_tournament_data import extract_tournament_data
 
 
 class Controller:
@@ -28,11 +28,12 @@ class Controller:
         diane = Player("Diane", "Tsuki", 7803, "11a12411")
         mikako = Player("Mikako", "Tantei", 7524, "22bhhij55")
 
-        player_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
+        players_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
 
-        View.display_players_score(player_list, True)
+        View.display_players_score(players_list, True)
 
-        tournament = Tournament("Chessy", "Strasbourg", player_list,  number_of_round)
+        tournament = Tournament("Chessy", "Strasbourg", players_list,  number_of_round)
+        extract_tournament_data(tournament)
 
         while len(tournament.rounds_list) != number_of_round:
             games_list = tournament.create_round()
@@ -55,6 +56,8 @@ class Controller:
 
             # todo supprimer quand plus nécessaire ou conserver pour la démonstration ??????
             #  Peut-être améliorer l'affichage dans ce cas
-            print(f"lonely list -> {tournament.lonely_players}\n\n")
+
+            if tournament.odd_players_number():
+                print(f"lonely list -> {tournament.lonely_players}\n\n")
         print(tournament.rounds_list)
 
