@@ -86,13 +86,7 @@ class Round:
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
-    def first_round(self, round_players: list):
-        for i in range(0, len(round_players), 2):
-            if len(round_players) % 2 == 0 or i != len(round_players) - 1:
-                game = Game(round_players[i], round_players[i + 1], self)
-                self._games_list.append(game)
-
-    def not_first_round(self, round_players: list) -> bool:
+    def round_matchmaking(self, round_players: list):
         count = 0
         full_players_list = []
 
@@ -122,24 +116,13 @@ class Round:
                 self._games_list.append(game)
                 round_players.remove(player)
                 round_players.remove(possible_opponents[0])
-        return True
 
     def create_games(self):
-        # relaunch all the round if there is a problem during the construction of it
-        approved_round = False
-
-        # todo ne règle pas le problème si le problème arrive alors qu'il ne reste qu'un joueur pouvant être observateur !!
-        while not approved_round:
-            if len(self.games_list) > 0:
-                self.games_list.clear()
-            round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
-            if self.round_number != 1:
-                round_players_list = self.sort_custom_player_list(round_players_list)
-                approved_round = self.not_first_round(round_players_list)
-            else:
-                random.shuffle(round_players_list)
-                self.first_round(round_players_list)
-                approved_round = True
+        if len(self.games_list) > 0:
+            self.games_list.clear()
+        round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
+        round_players_list = self.sort_custom_player_list(round_players_list)
+        self.round_matchmaking(round_players_list)
 
         self.tournament.lonely_players.append(self.lonely_player)
 

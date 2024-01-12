@@ -1,9 +1,8 @@
 from models.tournament import Tournament
 from models.player import Player
-from models.round import Round
-from models.game import Game
 from view.view import View
 import datetime
+from extractor.player_list_extract import extract_global_player_list
 
 
 class Controller:
@@ -28,11 +27,12 @@ class Controller:
         diane = Player("Diane", "Tsuki", 7803, "11a12411")
         mikako = Player("Mikako", "Tantei", 7524, "22bhhij55")
 
-        player_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
+        players_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
 
-        View.display_players_score(player_list, True)
+        View.display_players_score(players_list, True)
 
-        tournament = Tournament("Chessy", "Strasbourg", player_list,  number_of_round)
+        tournament = Tournament("Chessy", "Strasbourg", players_list,  number_of_round)
+        extract_global_player_list(players_list)
 
         while len(tournament.rounds_list) != number_of_round:
             games_list = tournament.create_round()
