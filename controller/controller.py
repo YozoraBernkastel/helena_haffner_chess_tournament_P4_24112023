@@ -56,6 +56,8 @@ class Controller:
 
             # todo supprimer quand plus nécessaire ou conserver pour la démonstration ??????
             #  Peut-être améliorer l'affichage dans ce cas
-            print(f"lonely list -> {tournament.lonely_players}\n\n")
+
+            if tournament.odd_players_number():
+                print(f"lonely list -> {tournament.lonely_players}\n\n")
         print(tournament.rounds_list)
 

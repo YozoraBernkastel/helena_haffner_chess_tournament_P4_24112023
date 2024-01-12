@@ -73,6 +73,11 @@ class Tournament:
 
         return games_list
 
+    @staticmethod
+    def was_already_played(actual_player, opponent, game) -> bool:
+        return((game.player_one is actual_player and game.player_two is opponent) or
+               (game.player_one is opponent and game.player_two is actual_player))
+
     def no_repeat_game(self, actual_player, round_possible_opponents: list) -> list:
         possible_opponents = []
         for opponent in round_possible_opponents:
@@ -80,15 +85,13 @@ class Tournament:
             if len(self.rounds_list) < len(self.players_list) - 2:
                 for r in self.rounds_list:
                     for game in r.games_list:
-                        if ((game.player_one is actual_player and game.player_two is opponent) or
-                                (game.player_one is opponent and game.player_two is actual_player)):
+                        if self.was_already_played(actual_player, opponent, game):
                             already_played = True
                             break
                 if not already_played:
                     possible_opponents.append(opponent)
             else:
-                round_range = len(self.players_list)-3 if self.odd_players_number() else len(self.players_list)-2
-                for r in self.rounds_list[-round_range:]:
+                for r in self.rounds_list[-2:]:
                     for game in r.games_list:
                         if ((game.player_one is actual_player and game.player_two is opponent) or
                                 (game.player_one is opponent and game.player_two is actual_player)):
@@ -96,7 +99,6 @@ class Tournament:
                             break
                 if not already_played:
                     possible_opponents.append(opponent)
-
         return possible_opponents
 
 

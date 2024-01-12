@@ -105,10 +105,10 @@ class Round:
 
                     random.shuffle(round_players)
                     count = 0
+
                 possible_opponents = [opponent for opponent in round_players if opponent is not player]
                 possible_opponents = self.tournament.no_repeat_game(player, possible_opponents) if len(self.players_list) > 4 \
                     else possible_opponents
-
                 if len(possible_opponents) == 0:
                     continue
 
