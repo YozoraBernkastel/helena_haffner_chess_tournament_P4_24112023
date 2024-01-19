@@ -3,7 +3,6 @@ from models.player import Player
 
 class Game:
     def __init__(self, player_one: Player, player_two: Player, round_object):
-        # générer un id ?????????????????
         self._player_one = player_one
         self._player_two = player_two
         self._round = round_object
@@ -71,3 +70,11 @@ class Game:
         self._player_one.total_point = 0.5
         self._player_two.total_point = 0.5
         self._game_result = "match nul"
+
+    # method
+    def convert_data(self) -> dict:
+        game_info = dict()
+        game_info["player one"] = f"{self.player_one.firstname} {self.player_one.family_name} : {self.player_one.chess_id}"
+        game_info["player_two"] = f"{self.player_two.firstname} {self.player_two.family_name}: {self.player_two.chess_id}"
+        game_info["result"] = self._game_result
+        return game_info

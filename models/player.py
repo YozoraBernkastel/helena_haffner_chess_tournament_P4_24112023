@@ -1,5 +1,6 @@
 from export.export_player_data import export_player_list
 
+
 class Player:
     def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
         self._firstname = first_name
@@ -57,3 +58,12 @@ class Player:
     # Methods
     def player_save(self):
         export_player_list(self)
+
+    def format_data(self) -> dict:
+        player_info = dict()
+        player_info["id"] = self.chess_id
+        player_info["name"] = self.family_name
+        player_info["firstname"] = self.firstname
+        player_info["age"] = self.age
+        player_info["total Points"] = self.total_point
+        return player_info
