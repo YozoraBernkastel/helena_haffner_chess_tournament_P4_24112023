@@ -1,13 +1,12 @@
 import random
 import datetime
 import operator as op
-
 from models.game import Game
 
 
 class Round:
     def __init__(self, tournament, round_number: int):
-        self._round_number = round_number
+        self._round_name = round_number
         self._games_list = []
         self._tournament = tournament
         self._starting_time = str(datetime.datetime.now())
@@ -15,12 +14,12 @@ class Round:
         self._lonely_player = None
 
     def __repr__(self):
-        return f"Round {self.round_number}"
+        return f"Round {self.round_name}"
 
     # getter
     @property
-    def round_number(self) -> int:
-        return self._round_number
+    def round_name(self) -> int:
+        return self._round_name
 
     @property
     def games_list(self) -> list:
@@ -47,9 +46,9 @@ class Round:
         return self._lonely_player
 
     # setter
-    @round_number.setter
-    def round_number(self, new: int):
-        self._round_number = new
+    @round_name.setter
+    def round_name(self, new: int):
+        self._round_name = new
 
     @games_list.setter
     def games_list(self, new: list):
@@ -133,3 +132,13 @@ class Round:
     def sort_player_list(self):
         return self.sort_custom_player_list(self.tournament.players_list)
 
+    def convert_data(self) -> dict:
+        round_info = dict()
+        round_info["name"] = self.round_name
+        round_info["starting time"] = self.starting_time
+        round_info["ending time"] = self.ending_time
+        if self.tournament.odd_players_number():
+            round_info["player without game"] = (f"{self.lonely_player.firstname} {self.lonely_player.family_name}"
+                                                 f": {self.lonely_player.chess_id}")
+        round_info["games"] = [game.convert_data() for game in self.games_list]
+        return round_info

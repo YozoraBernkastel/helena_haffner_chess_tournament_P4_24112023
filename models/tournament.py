@@ -126,6 +126,18 @@ class Tournament:
                     possible_opponents.append(opponent)
         return possible_opponents
 
+    def convert_data(self) -> dict:
+        tournament_info = dict()
+        tournament_info["id"] = str(self.id)
+        tournament_info["name"] = self.name
+        tournament_info["location"] = self.location
+        tournament_info["Total Number of Rounds"] = self.number_of_rounds
+        tournament_info["description"] = self.description
+        tournament_info["starting time"] = self.starting_time
+        tournament_info["ending time"] = self.ending_time
+        tournament_info["list of rounds"] = [around.convert_data() for around in self.rounds_list]
+        return tournament_info
+
 
 
 

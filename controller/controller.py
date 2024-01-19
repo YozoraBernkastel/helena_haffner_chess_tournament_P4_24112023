@@ -2,7 +2,6 @@ from models.tournament import Tournament
 from models.player import Player
 from view.view import View
 import datetime
-from export.export_player_data import export_player_list
 from export.export_tournament_data import export_tournament_data
 
 
@@ -56,15 +55,14 @@ class Controller:
 
                 View.display_players_score(tournament.players_list, False)
                 games_list[-1].belong_round.ending = datetime.datetime.now()
-                print(f"Ending Time :::: {games_list[-1].belong_round.ending}")
-                # todo créer un export "classement" que l'on met à jour après chaque round.
 
-                # todo supprimer quand plus nécessaire ou conserver pour la démonstration ??????
-                #  Peut-être améliorer l'affichage dans ce cas
+                if (len(tournament.rounds_list) + 1) == tournament.number_of_rounds:
+                    tournament.set_ending_time()
+                export_tournament_data(tournament)
+                # todo créer un export "classement" que l'on met à jour après chaque round.
 
                 if tournament.odd_players_number():
                     print(f"lonely list -> {tournament.lonely_players}\n\n")
 
-            tournament.set_ending_time()
             print(tournament.rounds_list)
 
