@@ -7,7 +7,18 @@ from settings import settings
 
 
 class View:
+    @staticmethod
+    def tournament_name():
+        print("\nComment souhaitez-vous nommer le tournoi ?")
+        name_choice = input("")
 
+        return name_choice
+
+    @staticmethod
+    def tournament_location():
+        print("\nOù se déroule le tournoi ?")
+        location_choice = input("")
+        return location_choice
     @staticmethod
     def display_menu() -> str:
         """

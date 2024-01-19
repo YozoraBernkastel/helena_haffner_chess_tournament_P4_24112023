@@ -11,53 +11,58 @@ class Controller:
     @staticmethod
     def link():
         # todo demander en début de tournoi à enregistrer les joueurs !! Nécessaire
+
         choice = View.display_menu()
 
-        if choice == "q" or choice == "Q":
-            return
+        if choice == "1":
+            tournament_name = View.tournament_name()
+            tournament_location = View.tournament_location()
 
-        number_of_round = View.round_number()
+            if choice == "q" or choice == "Q":
+                return
 
-        selene = Player("Sélène", "Tsuki", 22, "15av4")
-        agathe = Player("Agathe", "Observer", 38, "8846uh8")
-        frederica = Player("Frederica", "Majou", 7803, "11aa11")
-        fall = Player("Fall", "Paradox", 7524, "22qb55")
-        fipolyte = Player("Hipolyte", "Chimera", 4578, "bbbbb8888")
-        sophie = Player("Sophie", "Spring", 22, "15abg4")
-        octave = Player("Octave", "Leblanc", 38, "88ok4uh8")
-        diane = Player("Diane", "Tsuki", 7803, "11a12411")
-        mikako = Player("Mikako", "Tantei", 7524, "22bhhij55")
+            number_of_round = View.round_number()
 
-        players_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
+            selene = Player("Sélène", "Tsuki", 22, "15av4")
+            agathe = Player("Agathe", "Observer", 38, "8846uh8")
+            frederica = Player("Frederica", "Majou", 7803, "11aa11")
+            fall = Player("Fall", "Paradox", 7524, "22qb55")
+            fipolyte = Player("Hipolyte", "Chimera", 4578, "bbbbb8888")
+            sophie = Player("Sophie", "Spring", 22, "15abg4")
+            octave = Player("Octave", "Leblanc", 38, "88ok4uh8")
+            diane = Player("Diane", "Tsuki", 7803, "11a12411")
+            mikako = Player("Mikako", "Tantei", 7524, "22bhhij55")
 
-        View.display_players_score(players_list, True)
+            players_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
 
-        tournament = Tournament("Chessy", "Strasbourg", players_list,  number_of_round)
-        extract_tournament_data(tournament)
+            View.display_players_score(players_list, True)
 
-        while len(tournament.rounds_list) != number_of_round:
-            games_list = tournament.create_round()
+            tournament = Tournament(tournament_name, tournament_location, players_list,  number_of_round)
+            extract_tournament_data(tournament)
 
-            # Now the results
-            for game in games_list:
-                if game is games_list[0]:
-                    View.show_round_number(game.belong_round)
-                    View.show_round_lonely_player(game.belong_round)
-                    View.show_all_games_of_round(games_list)
+            while len(tournament.rounds_list) != number_of_round:
+                games_list = tournament.create_round()
 
-                res = View.asks_result(game)
-                game.game_result = res
-                # todo ici il faudra exporter le résultat dans un json
+                # Now the results
+                for game in games_list:
+                    if game is games_list[0]:
+                        View.show_round_number(game.belong_round)
+                        View.show_round_lonely_player(game.belong_round)
+                        View.show_all_games_of_round(games_list)
 
-            View.display_players_score(tournament.players_list, False)
-            games_list[-1].belong_round.ending = datetime.datetime.now()
-            print(f"Ending Time :::: {games_list[-1].belong_round.ending}")
-            # todo créer un export "classement" que l'on met à jour après chaque round.
+                    res = View.asks_result(game)
+                    game.game_result = res
+                    # todo ici il faudra exporter le résultat dans un json
 
-            # todo supprimer quand plus nécessaire ou conserver pour la démonstration ??????
-            #  Peut-être améliorer l'affichage dans ce cas
+                View.display_players_score(tournament.players_list, False)
+                games_list[-1].belong_round.ending = datetime.datetime.now()
+                print(f"Ending Time :::: {games_list[-1].belong_round.ending}")
+                # todo créer un export "classement" que l'on met à jour après chaque round.
 
-            if tournament.odd_players_number():
-                print(f"lonely list -> {tournament.lonely_players}\n\n")
-        print(tournament.rounds_list)
+                # todo supprimer quand plus nécessaire ou conserver pour la démonstration ??????
+                #  Peut-être améliorer l'affichage dans ce cas
+
+                if tournament.odd_players_number():
+                    print(f"lonely list -> {tournament.lonely_players}\n\n")
+            print(tournament.rounds_list)
 
