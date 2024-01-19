@@ -11,7 +11,7 @@ class View:
     def tournament_name():
         print("\nComment souhaitez-vous nommer le tournoi ?")
         name_choice = input("")
-
+        # parcourir les exports pour voir si le nom est déjà utilisé ? et si oui, redemander ?
         return name_choice
 
     @staticmethod
@@ -19,6 +19,7 @@ class View:
         print("\nOù se déroule le tournoi ?")
         location_choice = input("")
         return location_choice
+
     @staticmethod
     def display_menu() -> str:
         """

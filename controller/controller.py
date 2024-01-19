@@ -3,7 +3,7 @@ from models.player import Player
 from view.view import View
 import datetime
 from export.export_player_data import export_player_list
-from export.export_tournament_data import extract_tournament_data
+from export.export_tournament_data import export_tournament_data
 
 
 class Controller:
@@ -38,7 +38,7 @@ class Controller:
             View.display_players_score(players_list, True)
 
             tournament = Tournament(tournament_name, tournament_location, players_list,  number_of_round)
-            extract_tournament_data(tournament)
+            export_tournament_data(tournament)
 
             while len(tournament.rounds_list) != number_of_round:
                 games_list = tournament.create_round()
@@ -64,5 +64,7 @@ class Controller:
 
                 if tournament.odd_players_number():
                     print(f"lonely list -> {tournament.lonely_players}\n\n")
+
+            tournament.set_ending_time()
             print(tournament.rounds_list)
 

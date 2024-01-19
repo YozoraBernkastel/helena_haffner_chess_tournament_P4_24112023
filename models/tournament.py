@@ -1,20 +1,22 @@
 from models.round import Round
 import uuid
+import datetime
 
 
 class Tournament:
-    # nombre de round à définir !!! donc osef game_repeat_number
-    def __init__(self, tournament_name: str, location: str, players_list: list, game_repeat_number: int):
+    def __init__(self, tournament_name: str, location: str, players_list: list, number_of_rounds: int):
         self._name = tournament_name
         self._location = location
         self._players_list: list = players_list
         self._rounds_list = []
         self._lonely_players: list = []
-        self._game_repeat = game_repeat_number
+        self._number_of_rounds = number_of_rounds
         self._id = uuid.uuid1()
         # todo quel genre de description ? Une parlant de détails spécificiques décidés avant le tournoi ou plutôt
         #  des commentaires à faire suite au déroulé du tournoi (donc à ajouter en fin de tournoi) ?
         self._description = ""
+        self._starting_time = str(datetime.datetime.now())
+        self._ending_time = "Le tournoi est en cours"
 
     def __repr__(self):
         return f"Tournoi {self.name} de {self.location}"
@@ -40,8 +42,24 @@ class Tournament:
         return self._lonely_players
 
     @property
+    def number_of_rounds(self):
+        return self._number_of_rounds
+
+    @property
     def id(self):
         return self._id
+
+    @property
+    def starting_time(self):
+        return self._starting_time
+
+    @property
+    def ending_time(self):
+        return self._ending_time
+
+    @property
+    def description(self):
+        return self._description
 
     # setter
     @name.setter
@@ -59,6 +77,13 @@ class Tournament:
     @lonely_players.setter
     def lonely_players(self, new: Round):
         self._lonely_players.append(new)
+
+    def set_ending_time(self):
+        self._ending_time = str(datetime.datetime.now())
+
+    @description.setter
+    def description(self, new):
+        self._description = new
 
     # methods
     def odd_players_number(self) -> bool:

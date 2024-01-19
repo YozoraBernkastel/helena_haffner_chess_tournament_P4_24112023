@@ -2,6 +2,7 @@ import os
 from os import path, stat
 import json
 from settings.settings import EXPORT_FOLDER
+from export.export_helper import write_json
 
 
 def convert_player_in_dict(player) -> dict:
@@ -12,10 +13,6 @@ def convert_player_in_dict(player) -> dict:
     player_info["age"] = player.age
     player_info["totalPoint"] = player.total_point
     return player_info
-
-
-def write_json(file, players_list) -> None:
-    file.write(json.dumps(players_list, indent=4, ensure_ascii=False))
 
 
 def add_new_player(json_data, player):
@@ -30,12 +27,11 @@ def add_new_player(json_data, player):
     return json_data
 
 
-def export_player_list(player):
-    folder_path = EXPORT_FOLDER
+def export_player_list(player, folder_path=f"{EXPORT_FOLDER}global_players_list/"):
     if not path.exists(folder_path):
         os.makedirs(folder_path)
 
-    file_path = f"{folder_path}global_players_list.json"
+    file_path = f"{folder_path}players_list.json"
     json_data = []
 
     if path.exists(file_path) and stat(file_path).st_size != 0:

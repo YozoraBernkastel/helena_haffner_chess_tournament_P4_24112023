@@ -10,8 +10,8 @@ class Round:
         self._round_number = round_number
         self._games_list = []
         self._tournament = tournament
-        self._starting_time = datetime.datetime.now()
-        self._ending_time = None
+        self._starting_time = str(datetime.datetime.now())
+        self._ending_time = "Le round est en cours"
         self._lonely_player = None
 
     def __repr__(self):
@@ -35,11 +35,11 @@ class Round:
         return self._tournament
 
     @property
-    def starting(self):
+    def starting_time(self):
         return self._starting_time
 
     @property
-    def ending(self):
+    def ending_time(self):
         return self._ending_time
 
     @property
@@ -59,9 +59,9 @@ class Round:
     def tournament(self, new: str):
         self._tournament = new
 
-    @ending.setter
-    def ending(self, date):
-        self._ending_time = date
+    @ending_time.setter
+    def ending_time(self, date):
+        self._ending_time = str(date)
 
     @lonely_player.setter
     def lonely_player(self, new):
