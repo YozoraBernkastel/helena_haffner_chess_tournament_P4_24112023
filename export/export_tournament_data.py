@@ -10,7 +10,7 @@ def export_tournament_data(tournament) -> None:
     if not path.exists(folder_path):
         os.makedirs(folder_path)
 
-    file_path = f"{folder_path}{tournament.name}_{tournament.id}.json"
+    file_path = f"{folder_path}{tournament.name}_{tournament.starting_time}.json"
 
     for player in tournament.players_list:
         export_player_list(player, folder_path)

@@ -3,13 +3,15 @@ from models.player import Player
 from view.view import View
 import datetime
 from export.export_tournament_data import export_tournament_data
+from controller.controller_helper import is_already_known_id, already_in_tournament
 
 
 class Controller:
 
     @staticmethod
     def link():
-        # todo demander en début de tournoi à enregistrer les joueurs !! Nécessaire
+        # todo comment gérer la liste des lonely lors d'une reprise ? La recalculer à partir des lonely de chaque tour
+        #  et simuler les opérations ou bien inclure la liste telle qu'elle dans le json puis la suppriemr à la toute fin ?
 
         choice = View.display_menu()
 
@@ -21,23 +23,35 @@ class Controller:
                 return
 
             number_of_round = View.round_number()
+            number_of_players = View.number_of_players()
+            tournament = Tournament(tournament_name, tournament_location, number_of_players, number_of_round)
+            # export_tournament_data(tournament)
 
-            selene = Player("Sélène", "Tsuki", 22, "15av4")
-            agathe = Player("Agathe", "Observer", 38, "8846uh8")
-            frederica = Player("Frederica", "Majou", 7803, "11aa11")
-            fall = Player("Fall", "Paradox", 7524, "22qb55")
-            fipolyte = Player("Hipolyte", "Chimera", 4578, "bbbbb8888")
-            sophie = Player("Sophie", "Spring", 22, "15abg4")
-            octave = Player("Octave", "Leblanc", 38, "88ok4uh8")
-            diane = Player("Diane", "Tsuki", 7803, "11a12411")
-            mikako = Player("Mikako", "Tantei", 7524, "22bhhij55")
+            created_players = 0
+            while number_of_players > created_players:
+                created_players += 1
 
-            players_list = [selene, agathe, frederica, fall, fipolyte, sophie, octave, diane, mikako]
+                chess_id = ""
+                already_registered = False
 
-            View.display_players_score(players_list, True)
+                while chess_id == "" or already_registered:
+                    if chess_id != "":
+                        View.already_added(chess_id)
+                    chess_id = View.asks_chess_id()
+                    already_registered = already_in_tournament(chess_id, tournament.name)
 
-            tournament = Tournament(tournament_name, tournament_location, players_list,  number_of_round)
-            export_tournament_data(tournament)
+                id_exist, this_player = is_already_known_id(chess_id)
+
+                if id_exist:
+                    View.known_player_prompt(chess_id)
+                    firstname, name, birthdate = this_player["firstname"], this_player["name"], this_player["birthdate"]
+                else:
+                    firstname, name, birthdate = View.players_registration(tournament)
+
+                player = Player(firstname, name, birthdate, chess_id)
+                tournament.players_list = player
+
+            View.display_players_score(tournament.players_list, True)
 
             while len(tournament.rounds_list) != number_of_round:
                 games_list = tournament.create_round()
