@@ -2,10 +2,10 @@ from export.export_player_data import export_player_list
 
 
 class Player:
-    def __init__(self, first_name: str, family_name: str, age: int, player_chess_id: str):
+    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str):
         self._firstname = first_name
         self._family_name = family_name
-        self._age = age
+        self._birthdate = birthdate
         self._player_chess_id = player_chess_id
         self._total_point: int = 0
         self.player_save()
@@ -23,8 +23,9 @@ class Player:
         return self._family_name
 
     @property
-    def age(self) -> int:
-        return self._age
+    def birthdate(self):
+        # todo il faut un format précis
+        return self._birthdate
 
     @property
     def chess_id(self) -> str:
@@ -43,9 +44,9 @@ class Player:
     def family_name(self, new: str):
         self._family_name = new
 
-    @age.setter
-    def age(self, new: int):
-        self._age = new
+    @birthdate.setter
+    def birthdate(self, new: int):
+        self._birthdate = new
 
     @chess_id.setter
     def chess_id(self, new: str):
@@ -64,6 +65,6 @@ class Player:
         player_info["id"] = self.chess_id
         player_info["name"] = self.family_name
         player_info["firstname"] = self.firstname
-        player_info["age"] = self.age
+        player_info["birthdate"] = self.birthdate
         player_info["total Points"] = self.total_point
         return player_info

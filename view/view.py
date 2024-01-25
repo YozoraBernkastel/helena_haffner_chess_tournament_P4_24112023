@@ -1,8 +1,8 @@
 import random
-
+from models.tournament import Tournament
 from models.round import Round
+from models.player import Player
 from models.game import Game
-# from rich.console import console
 from settings import settings
 
 
@@ -52,6 +52,29 @@ class View:
         return choice
 
     @staticmethod
+    def number_of_players():
+        print("Combien de joueurs participeront au tournoi ?")
+        players_number = input("")
+        return int(players_number)
+
+    @staticmethod
+    def asks_chess_id():
+        print("\nVeuillez entrer les informations du joueur")
+        print("Identifiant national d’échecs :")
+        return input("")
+
+    @staticmethod
+    def players_registration(tournament: Tournament):
+        print("Nom de famille :")
+        name = input("")
+        print("Prénom : ")
+        firstname = input("")
+        print("Date de naissance (au format jj/mm/aaaa) :")
+        birthdate = input("")
+
+        return firstname, name, birthdate
+
+    @staticmethod
     def show_round_number(actual_round: Round):
         print(f"     ########   {actual_round}    ########\n")
 
@@ -81,8 +104,11 @@ class View:
             print(f"    1) Victoire de {game.player_one}")
             print(f"    2) Victoire de {game.player_two}")
             print("    3) Match nul\n")
+
             if settings.AUTOCOMPLETE:
-                return str(random.randint(1, 3))
+                rand = str(random.randint(1, 3))
+                print(rand)
+                return rand
 
             choice = input("")
             choice = choice.strip()
@@ -97,8 +123,10 @@ class View:
 
     @staticmethod
     def round_number() -> int:
-        """View asking for the number total of round for the new tournament.
-        By Default, there is 4 rounds"""
+        """
+        View asking for the number total of round for the new tournament.
+        By Default, there is 4 rounds
+        """
         number = ""
         check_answer = False
         while not check_answer:
@@ -131,3 +159,12 @@ class View:
         for player in sorted_list:
             print(f"    {player} -> {player.total_point}")
         print("\n")
+
+    @staticmethod
+    def already_added(old_chess_id):
+        print(f"Le joueur id {old_chess_id} a déjà été ajouté à la liste des joueurs du tournoi\n")
+
+
+    @staticmethod
+    def known_player_prompt(chess_id):
+        print(f"Les informations du joueur id {chess_id} sont déjà connues !\n")

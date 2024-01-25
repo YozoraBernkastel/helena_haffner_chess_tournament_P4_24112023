@@ -1,13 +1,16 @@
 from models.round import Round
+from models.player import Player
+from export.export_tournament_data import export_tournament_data
 import uuid
 import datetime
 
 
 class Tournament:
-    def __init__(self, tournament_name: str, location: str, players_list: list, number_of_rounds: int):
+    def __init__(self, tournament_name: str, location: str, number_of_players: int,  number_of_rounds: int):
         self._name = tournament_name
         self._location = location
-        self._players_list: list = players_list
+        self._number_of_players = number_of_players
+        self._players_list: list = []
         self._rounds_list = []
         self._lonely_players: list = []
         self._number_of_rounds = number_of_rounds
@@ -17,6 +20,7 @@ class Tournament:
         self._description = ""
         self._starting_time = str(datetime.datetime.now())
         self._ending_time = "Le tournoi est en cours"
+        self.save()
 
     def __repr__(self):
         return f"Tournoi {self.name} de {self.location}"
@@ -28,6 +32,10 @@ class Tournament:
     @property
     def location(self):
         return self._location
+
+    @property
+    def number_of_players(self):
+        return self._number_of_players
 
     @property
     def players_list(self):
@@ -67,8 +75,19 @@ class Tournament:
         self._name = new
 
     @players_list.setter
-    def players_list(self, new):
-        self._players_list = new
+    def players_list(self, new) -> None:
+        """
+         If the attribute is a Player object, add it to the players_list.
+         If the attribute is a list of Player object, add each of them to the players_list.
+        """
+        if type(new) == Player:
+            self._players_list.append(new)
+            export_tournament_data(self)
+            return
+
+        if type(new) == list:
+            for p in new:
+                self.players_list = p
 
     @rounds_list.setter
     def rounds_list(self, new: Round):
@@ -87,7 +106,7 @@ class Tournament:
 
     # methods
     def odd_players_number(self) -> bool:
-        return len(self.players_list) % 2 != 0
+        return self.number_of_players % 2 != 0
 
     def create_round(self):
         around_the_world = Round(self, len(self.rounds_list) + 1)
@@ -126,11 +145,15 @@ class Tournament:
                     possible_opponents.append(opponent)
         return possible_opponents
 
+    def save(self):
+        export_tournament_data(self)
+
     def convert_data(self) -> dict:
         tournament_info = dict()
         tournament_info["id"] = str(self.id)
         tournament_info["name"] = self.name
         tournament_info["location"] = self.location
+        tournament_info["number_of_players"] = self.number_of_players
         tournament_info["Total Number of Rounds"] = self.number_of_rounds
         tournament_info["description"] = self.description
         tournament_info["starting time"] = self.starting_time
