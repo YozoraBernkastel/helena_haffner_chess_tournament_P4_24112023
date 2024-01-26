@@ -9,7 +9,7 @@ class Round:
         self._round_name = round_number
         self._games_list = []
         self._tournament = tournament
-        self._starting_time = str(datetime.datetime.now())
+        self._starting_time = str(datetime.datetime.now().replace(microsecond=0))
         self._ending_time = "Le round est en cours"
         self._lonely_player = None
 

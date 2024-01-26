@@ -3,8 +3,8 @@ from os import path
 import json
 
 
-def already_in_tournament(chess_id, tournament_name):
-    tournament_players_path = f"{EXPORT_FOLDER}tournaments/{tournament_name}/players_list.json"
+def already_in_tournament(chess_id, tournament):
+    tournament_players_path = f"{EXPORT_FOLDER}tournaments/{tournament.name}_{tournament.starting_time}/players_list.json"
 
     if path.exists(tournament_players_path):
         with open(tournament_players_path, "r") as f:

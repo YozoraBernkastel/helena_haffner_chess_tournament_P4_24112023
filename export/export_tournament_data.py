@@ -6,7 +6,7 @@ from export.export_player_data import export_player_list
 
 
 def export_tournament_data(tournament) -> None:
-    folder_path = f"{EXPORT_FOLDER}tournaments/{tournament.name}/"
+    folder_path = f"{EXPORT_FOLDER}tournaments/{tournament.name}_{tournament.starting_time}/"
     if not path.exists(folder_path):
         os.makedirs(folder_path)
 

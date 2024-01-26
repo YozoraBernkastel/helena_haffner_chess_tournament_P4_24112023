@@ -18,7 +18,7 @@ class Tournament:
         # todo quel genre de description ? Une parlant de détails spécificiques décidés avant le tournoi ou plutôt
         #  des commentaires à faire suite au déroulé du tournoi (donc à ajouter en fin de tournoi) ?
         self._description = ""
-        self._starting_time = str(datetime.datetime.now())
+        self._starting_time = str(datetime.datetime.now().replace(microsecond=0))
         self._ending_time = "Le tournoi est en cours"
         self.save()
 
@@ -98,7 +98,7 @@ class Tournament:
         self._lonely_players.append(new)
 
     def set_ending_time(self):
-        self._ending_time = str(datetime.datetime.now())
+        self._ending_time = str(datetime.datetime.now().replace(microsecond=0))
 
     @description.setter
     def description(self, new):

@@ -38,7 +38,7 @@ class Controller:
                     if chess_id != "":
                         View.already_added(chess_id)
                     chess_id = View.asks_chess_id()
-                    already_registered = already_in_tournament(chess_id, tournament.name)
+                    already_registered = already_in_tournament(chess_id, tournament)
 
                 id_exist, this_player = is_already_known_id(chess_id)
 
@@ -68,7 +68,7 @@ class Controller:
                     # todo ici il faudra exporter le résultat dans un json
 
                 View.display_players_score(tournament.players_list, False)
-                games_list[-1].belong_round.ending = datetime.datetime.now()
+                games_list[-1].belong_round.ending = datetime.datetime.now().replace(microsecond=0)
 
                 if (len(tournament.rounds_list) + 1) == tournament.number_of_rounds:
                     tournament.set_ending_time()
