@@ -2,12 +2,13 @@ from export.export_player_data import export_player_list
 
 
 class Player:
-    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str):
+    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points):
         self._firstname = first_name
         self._family_name = family_name
         self._birthdate = birthdate
         self._player_chess_id = player_chess_id
-        self._total_point: int = 0
+        self._total_points = total_points
+        self._tournament_points = 0
         self.player_save()
 
     def __repr__(self):
@@ -32,8 +33,12 @@ class Player:
         return self._player_chess_id
 
     @property
-    def total_point(self):
-        return self._total_point
+    def total_points(self):
+        return self._total_points
+
+    @property
+    def tournament_points(self):
+        return self._tournament_points
 
     # setter
     @firstname.setter
@@ -52,9 +57,13 @@ class Player:
     def chess_id(self, new: str):
         self._player_chess_id = new
 
-    @total_point.setter
-    def total_point(self, new: int):
-        self._total_point += new
+    @total_points.setter
+    def total_points(self, new: int):
+        self._total_points += new
+
+    @tournament_points.setter
+    def tournament_points(self, new: int):
+        self._tournament_points += new
 
     # Methods
     def player_save(self):
@@ -66,5 +75,5 @@ class Player:
         player_info["name"] = self.family_name
         player_info["firstname"] = self.firstname
         player_info["birthdate"] = self.birthdate
-        player_info["total Points"] = self.total_point
+        player_info["total points"] = self.total_points
         return player_info

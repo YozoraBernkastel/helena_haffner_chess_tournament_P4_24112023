@@ -143,6 +143,7 @@ class Tournament:
                             break
                 if not already_played:
                     possible_opponents.append(opponent)
+
         return possible_opponents
 
     def save(self):

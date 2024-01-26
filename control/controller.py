@@ -52,11 +52,12 @@ class Controller:
 
             if id_exist:
                 View.known_player_prompt(chess_id)
-                firstname, name, birthdate = this_player["firstname"], this_player["name"], this_player["birthdate"]
+                firstname, name, birthdate, total_points = this_player["firstname"], this_player["name"], this_player["birthdate"], this_player["total points"]
             else:
                 firstname, name, birthdate = View.players_registration(tournament)
+                total_points = 0
 
-            player = Player(firstname, name, birthdate, chess_id)
+            player = Player(firstname, name, birthdate, chess_id, total_points)
             tournament.players_list = player
 
         View.display_players_score(tournament.players_list, True)
@@ -103,6 +104,7 @@ class Controller:
 
 
 
-
+# todo il faudra transformer les json data en objet tournament (etc) pour pouvoir
+#  utiliser les mêmes fonctions à l'affichage et à la reprise ?? Ou était-ce pour l'affichage à la fin du tournoi ?
 
 

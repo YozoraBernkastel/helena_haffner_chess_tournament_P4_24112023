@@ -10,7 +10,8 @@ def update_player_list(json_data, player) -> list:
     for json_player in json_data:
         if json_player['id'] == player.chess_id:
             found = True
-            json_player["total Points"] = player.total_point
+            json_player["total points"] = player.total_points
+
     if not found:
         new_player_data = player.format_data()
         json_data.append(new_player_data)
@@ -35,6 +36,25 @@ def export_player_list(player, folder_path=f"{EXPORT_FOLDER}global_players_list/
 
     with open(file_path, "w") as f:
         write_json(f, json_data)
+
+
+def update_global_players_list(player) -> None:
+    file_path = f"{EXPORT_FOLDER}global_players_list/players_list.json"
+    if path.exists(file_path):
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+
+        for p in data:
+            if player.chess_id == p["id"]:
+                p["total points"] += player.tournament_points
+                break
+
+        with open(file_path, "w") as f:
+            write_json(f, data)
+
+
+
+
 
 
 

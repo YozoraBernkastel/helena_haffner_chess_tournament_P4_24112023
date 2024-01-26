@@ -58,17 +58,21 @@ class Game:
     @game_result.setter
     def game_result(self, res: str):
         if res == "1":
-            self._player_one.total_point = 1
+            self._player_one.total_points = 1
+            self._player_one.tournament_points = 1
             self._game_result = f"victoire de {self._player_one}"
             return
 
         if res == "2":
-            self._player_two.total_point = 1
+            self._player_two.total_points = 1
+            self._player_two.tournament_points = 1
             self._game_result = f"victoire de {self._player_two}"
             return
 
-        self._player_one.total_point = 0.5
-        self._player_two.total_point = 0.5
+        self._player_one.total_points = 0.5
+        self._player_one.tournament_points = 0.5
+        self._player_two.total_points = 0.5
+        self._player_two.tournament_points = 0.5
         self._game_result = "match nul"
 
     # method

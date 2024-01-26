@@ -127,7 +127,7 @@ class Round:
 
     @staticmethod
     def sort_custom_player_list(players_list):
-        return sorted(players_list, key=lambda x: x.total_point, reverse=True)
+        return sorted(players_list, key=lambda x: x.total_points, reverse=True)
 
     def sort_player_list(self):
         return self.sort_custom_player_list(self.tournament.players_list)

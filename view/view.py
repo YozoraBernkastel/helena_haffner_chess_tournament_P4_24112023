@@ -154,9 +154,9 @@ class View:
         else:
             print("Classement actuel :\n")
 
-        sorted_list = sorted(player_list, key=lambda x: x.total_point, reverse=True)
+        sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
         for player in sorted_list:
-            print(f"    {player} -> {player.total_point}")
+            print(f"    {player} -> {player.total_points}")
         print("\n")
 
     @staticmethod
