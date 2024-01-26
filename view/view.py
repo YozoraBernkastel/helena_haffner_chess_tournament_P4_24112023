@@ -1,21 +1,20 @@
 import random
 from models.tournament import Tournament
 from models.round import Round
-from models.player import Player
 from models.game import Game
 from settings import settings
 
 
 class View:
     @staticmethod
-    def tournament_name():
+    def tournament_name() -> str:
         print("\nComment souhaitez-vous nommer le tournoi ?")
         name_choice = input("")
-        # parcourir les exports pour voir si le nom est déjà utilisé ? et si oui, redemander ?
+
         return name_choice
 
     @staticmethod
-    def tournament_location():
+    def tournament_location() -> str:
         print("\nOù se déroule le tournoi ?")
         location_choice = input("")
         return location_choice
@@ -41,8 +40,8 @@ class View:
                 check_answer = True
 
             elif choice == "2":
-                print("\nVoici les résultats ...")
                 check_answer = True
+
             elif choice == "Q" or choice == "q":
                 break
             else:
@@ -52,19 +51,19 @@ class View:
         return choice
 
     @staticmethod
-    def number_of_players():
+    def number_of_players() -> int:
         print("Combien de joueurs participeront au tournoi ?")
         players_number = input("")
         return int(players_number)
 
     @staticmethod
-    def asks_chess_id():
+    def asks_chess_id() -> str:
         print("\nVeuillez entrer les informations du joueur")
         print("Identifiant national d’échecs :")
         return input("")
 
     @staticmethod
-    def players_registration(tournament: Tournament):
+    def players_registration(tournament: Tournament) -> tuple:
         print("Nom de famille :")
         name = input("")
         print("Prénom : ")
@@ -75,18 +74,18 @@ class View:
         return firstname, name, birthdate
 
     @staticmethod
-    def show_round_number(actual_round: Round):
+    def show_round_number(actual_round: Round) -> None:
         print(f"     ########   {actual_round}    ########\n")
 
     @staticmethod
-    def show_all_games_of_round(games_list: list):
+    def show_all_games_of_round(games_list: list) -> None:
         print(f"Liste des parties du round :")
         for game in games_list:
             print(game)
         print("\n")
 
     @staticmethod
-    def show_round_lonely_player(actual_round: Round):
+    def show_round_lonely_player(actual_round: Round) -> None:
         if actual_round.tournament.odd_players_number():
             print(f"{actual_round.lonely_player} ne jouera pas durant ce Round.\n")
 
@@ -144,7 +143,7 @@ class View:
         return int(number)
 
     @staticmethod
-    def display_players_score(player_list: list, first_display=False):
+    def display_players_score(player_list: list, first_display=False) -> None:
         """
         :param first_display:
         :param player_list: list containing one or more players
@@ -161,10 +160,19 @@ class View:
         print("\n")
 
     @staticmethod
-    def already_added(old_chess_id):
+    def already_added(old_chess_id) -> None:
         print(f"Le joueur id {old_chess_id} a déjà été ajouté à la liste des joueurs du tournoi\n")
 
+    @staticmethod
+    def known_player_prompt(chess_id) -> None:
+        print(f"Les informations du joueur id {chess_id} sont déjà connues !\n")
 
     @staticmethod
-    def known_player_prompt(chess_id):
-        print(f"Les informations du joueur id {chess_id} sont déjà connues !\n")
+    def no_tournament_found() -> None:
+        print("La base de données est vide")
+
+    @staticmethod
+    def display_tournaments_list(tournaments_list):
+        print("Liste des tournois enregistrés :\n")
+        [print(f"   - {tournament[:-9]}") for tournament in tournaments_list]
+
