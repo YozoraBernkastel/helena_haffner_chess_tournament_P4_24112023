@@ -30,6 +30,9 @@ class Controller:
 
         tournament_name = View.tournament_name()
         tournament_location = View.tournament_location()
+        # todo demander à écrire une description pour le tournoi !!!
+
+        # todo enregistrer après le résultat de chaque partie
 
         number_of_round = View.round_number()
         number_of_players = View.number_of_players()
@@ -74,13 +77,14 @@ class Controller:
 
                 res = View.asks_result(game)
                 game.game_result = res
+                export_tournament_data(tournament)
 
             View.display_players_score(tournament.players_list, False)
             games_list[-1].belong_round.ending = datetime.datetime.now().replace(microsecond=0)
 
             if (len(tournament.rounds_list) + 1) == tournament.number_of_rounds:
                 tournament.set_ending_time()
-            export_tournament_data(tournament)
+                export_tournament_data(tournament)
 
             if tournament.odd_players_number():
                 print(f"lonely list -> {tournament.lonely_players}\n\n")

@@ -52,9 +52,11 @@ class View:
 
     @staticmethod
     def number_of_players() -> int:
-        print("Combien de joueurs participeront au tournoi ?")
-        players_number = input("")
-        return int(players_number)
+        players_number = 0
+        while players_number < 2:
+            print("Combien de joueurs participeront au tournoi ?")
+            players_number = input("")
+            return int(players_number)
 
     @staticmethod
     def asks_chess_id() -> str:
