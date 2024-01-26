@@ -1,9 +1,9 @@
-from controller.controller import Controller
+from control.controller import Controller
 
 
 def main():
-
-    Controller.link()
+    controller = Controller()
+    controller.display_menu()
 
 
 if __name__ == '__main__':
