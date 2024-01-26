@@ -176,3 +176,8 @@ class View:
         print("Liste des tournois enregistrés :\n")
         [print(f"   - {tournament[:-9]}") for tournament in tournaments_list]
 
+    @staticmethod
+    def choose_tournament_to_display() -> str:
+        print("\nDe quel tournoi souhaitez-vous consulter les statistiques ?")
+        return input("")
+

@@ -96,4 +96,13 @@ class Controller:
         tournaments_list = helper.items_in_folder(tournaments_folder)
         View.display_tournaments_list(tournaments_list)
 
+        existing_tournament = False
+        while not existing_tournament:
+            this_tournament = View.choose_tournament_to_display()
+            existing_tournament = any(this_tournament == tournament[:-9] for tournament in tournaments_list)
+
+
+
+
+
 
