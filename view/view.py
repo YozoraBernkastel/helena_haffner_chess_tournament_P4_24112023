@@ -176,7 +176,7 @@ class View:
     @staticmethod
     def display_tournaments_list(tournaments_list):
         print("Liste des tournois enregistrés :\n")
-        [print(f"   - {tournament[:-9]}") for tournament in tournaments_list]
+        [print(f"   - {tournament}") for tournament in tournaments_list]
 
     @staticmethod
     def choose_tournament_to_display() -> str:
@@ -184,6 +184,36 @@ class View:
         return input("")
 
     @staticmethod
+    def display_report_general_menu():
+        choice = ""
+        check_answer = False
+        while not check_answer:
+            print("Quelles informations souhaitez-vous consulter ?\n")
+            print("   1) Afficher le classement général")
+            print("   2) Afficher la liste de tous les joueurs par ordre alphabétique")
+            print("   3) Afficher la liste de tous les tournois")
+            print("   4) Consulter les informations d'un tournoi")
+            choice = input("")
+
+            if choice == "1" or choice == "2" or choice == "3" or choice == "4":
+                check_answer = True
+            else:
+                print("Choix invalide\n")
+
+        return choice
+
+    @staticmethod
     def display_tournament_info(tournament_path):
-        print("blabla")
+        print(tournament_path)
+
+
+
+
+    @staticmethod
+    def tournament_folder_not_found():
+        print("Le dossier du tournoi n'a pas été trouvé.")
+        print("Peut-être a-t-il été supprimé, déplacé ou renommé entre le moment où "
+              "la liste des tournoi a été faite et celui où vous avez fait votre choix")
+
+
 

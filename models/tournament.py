@@ -74,21 +74,6 @@ class Tournament:
     def name(self, new):
         self._name = new
 
-    @players_list.setter
-    def players_list(self, new) -> None:
-        """
-         If the attribute is a Player object, add it to the players_list.
-         If the attribute is a list of Player object, add each of them to the players_list.
-        """
-        if type(new) == Player:
-            self._players_list.append(new)
-            export_tournament_data(self)
-            return
-
-        if type(new) == list:
-            for p in new:
-                self.players_list = p
-
     @rounds_list.setter
     def rounds_list(self, new: Round):
         self._rounds_list.append(new)
@@ -116,6 +101,20 @@ class Tournament:
         self.rounds_list.append(around_the_world)
 
         return games_list
+
+    def add_player(self, new) -> None:
+        """
+         If the attribute is a Player object, add it to the players_list.
+         If the attribute is a list of Player object, add each of them to the players_list.
+        """
+        if type(new) == Player:
+            self._players_list.append(new)
+            export_tournament_data(self)
+            return
+
+        if type(new) == list:
+            for p in new:
+                self.add_player(p)
 
     @staticmethod
     def was_already_played(actual_player, opponent, game) -> bool:

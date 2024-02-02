@@ -30,10 +30,6 @@ def is_already_known_id(chess_id):
     return False, None
 
 
-def folder_exist(folder_path: str) -> bool:
-    return path.exists(folder_path)
-
-
 def json_file_exists(folder_path: str) -> bool:
     content = os.listdir(folder_path)
     json_files = any(pathlib.Path(file).suffix == ".json" for file in content)

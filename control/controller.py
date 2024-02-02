@@ -2,8 +2,11 @@ from models.tournament import Tournament
 from models.player import Player
 import control.controller_helper as helper
 from view.view import View
-import datetime
 from export.export_tournament_data import export_tournament_data
+import os
+from os import path
+import datetime
+
 
 from settings.settings import EXPORT_FOLDER
 
@@ -61,7 +64,7 @@ class Controller:
                 total_points = 0
 
             player = Player(firstname, name, birthdate, chess_id, total_points)
-            tournament.players_list = player
+            tournament.add_player(player)
 
         View.display_players_score(tournament.players_list, True)
 
@@ -90,25 +93,60 @@ class Controller:
             if tournament.odd_players_number():
                 print(f"lonely list -> {tournament.lonely_players}\n\n")
 
+            # todo !!!!!!!!! afficher le classement avec le nombre de points remporté dans le tournoi
+            #  afin d'avoir le classement du tournoi et non le classement global !!!
+
+    def display_report(self):
+        choice = View.display_report_general_menu()
+
+        if choice == "1":
+            self.global_ranking_display("points")
+        if choice == "2":
+            self.global_ranking_display("alphabetical")
+        if choice == "3":
+            self.tournaments_list()
+        if choice == "4":
+            self.tournament_info()
+
     @staticmethod
-    def display_report():
+    def global_ranking_display(sort_by):
+        print("en construction")
+
+    @staticmethod
+    def tournaments_list():
         tournaments_folder = f"{EXPORT_FOLDER}tournaments/"
-        if not helper.folder_exist(tournaments_folder):
-            View.no_tournament_found()
+
+        if path.exists(tournaments_folder) and len(os.listdir(tournaments_folder)) > 0:
+            tournaments_list = helper.items_in_folder(tournaments_folder)
+            View.display_tournaments_list(tournaments_list)
+            return tournaments_list
+
+        View.no_tournament_found()
+        return []
+
+    def tournament_info(self):
+        tournaments_folder = f"{EXPORT_FOLDER}tournaments/"
+        tournaments_list = self.tournaments_list()
+
+        if len(tournaments_list) == 0:
             return
 
-        tournaments_list = helper.items_in_folder(tournaments_folder)
-        View.display_tournaments_list(tournaments_list)
         this_tournament: str = ""
 
         existing_tournament = False
         while not existing_tournament:
             this_tournament = View.choose_tournament_to_display()
-            existing_tournament = any(this_tournament == tournament[:-9] for tournament in tournaments_list)
+            existing_tournament = any(this_tournament == tournament for tournament in tournaments_list)
 
         tournament_path = f"{tournaments_folder}{this_tournament}"
 
+        if not path.exists(tournament_path):
+            View.tournament_folder_not_found()
+            return
+
         View.display_tournament_info(tournament_path)
+
+
 
 
 
