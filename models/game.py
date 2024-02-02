@@ -56,29 +56,32 @@ class Game:
         self._tournament = new
 
     @game_result.setter
-    def game_result(self, res: str):
+    def game_result(self, result):
+        self._game_result = result
+
+    def set_result(self, res: str):
         if res == "1":
             self._player_one.total_points = 1
             self._player_one.tournament_points = 1
-            self._game_result = f"victoire de {self._player_one}"
+            self.game_result = f"victoire de {self._player_one}"
             return
 
         if res == "2":
             self._player_two.total_points = 1
             self._player_two.tournament_points = 1
-            self._game_result = f"victoire de {self._player_two}"
+            self.game_result = f"victoire de {self._player_two}"
             return
 
         self._player_one.total_points = 0.5
         self._player_one.tournament_points = 0.5
         self._player_two.total_points = 0.5
         self._player_two.tournament_points = 0.5
-        self._game_result = "match nul"
+        self.game_result = "match nul"
 
     # method
     def convert_data(self) -> dict:
         game_info = dict()
         game_info["player one"] = self.player_one.format_data(False)
-        game_info["player_two"] = self.player_two.format_data(False)
+        game_info["player two"] = self.player_two.format_data(False)
         game_info["result"] = self._game_result
         return game_info

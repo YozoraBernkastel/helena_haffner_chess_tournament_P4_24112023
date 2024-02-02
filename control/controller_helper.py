@@ -1,5 +1,4 @@
 from settings.settings import EXPORT_FOLDER
-
 import os
 from os import path
 import json

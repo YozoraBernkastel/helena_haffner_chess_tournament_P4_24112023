@@ -5,12 +5,12 @@ from settings.settings import EXPORT_FOLDER
 from export.export_helper import write_json
 
 
-def update_player_list(json_data, player) -> list:
+def update_player_list(json_data, player, total_points: bool) -> list:
     found = False
     for json_player in json_data:
         if json_player['id'] == player.chess_id:
             found = True
-            json_player["total points"] = player.total_points
+            json_player["total points"] = player.total_points if total_points else player.tournament_points
 
     if not found:
         new_player_data = player.format_data()
@@ -29,7 +29,8 @@ def export_player_list(player, folder_path=f"{EXPORT_FOLDER}global_players_list/
     if path.exists(file_path) and stat(file_path).st_size != 0:
         with open(file_path, 'r') as f:
             data = json.load(f)
-        json_data = update_player_list(data, player)
+        global_folder = folder_path == f"{EXPORT_FOLDER}global_players_list/"
+        json_data = update_player_list(data, player, global_folder)
 
     else:
         json_data.append(player.format_data())

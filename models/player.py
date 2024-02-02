@@ -77,6 +77,6 @@ class Player:
 
         if all_info:
             player_info["birthdate"] = self.birthdate
-            player_info["total points"] = self.total_points
+            player_info["total points"] = self.tournament_points
         return player_info
 

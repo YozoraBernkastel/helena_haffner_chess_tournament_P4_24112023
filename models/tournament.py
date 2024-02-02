@@ -1,4 +1,5 @@
 from models.round import Round
+from models.round import Game
 from models.player import Player
 from export.export_tournament_data import export_tournament_data
 import uuid
@@ -6,7 +7,8 @@ import datetime
 
 
 class Tournament:
-    def __init__(self, tournament_name: str, location: str, number_of_players: int,  number_of_rounds: int):
+    def __init__(self, tournament_name: str, location: str, number_of_players: int,  number_of_rounds: int,
+                 creation=True):
         self._name = tournament_name
         self._location = location
         self._number_of_players = number_of_players
@@ -20,7 +22,8 @@ class Tournament:
         self._description = ""
         self._starting_time = str(datetime.datetime.now().replace(microsecond=0))
         self._ending_time = "Le tournoi est en cours"
-        self.save()
+        if creation:
+            self.save()
 
     def __repr__(self):
         return f"Tournoi {self.name} de {self.location}"
@@ -74,9 +77,9 @@ class Tournament:
     def name(self, new):
         self._name = new
 
-    @rounds_list.setter
-    def rounds_list(self, new: Round):
-        self._rounds_list.append(new)
+    @id.setter
+    def id(self, new):
+        self._id = new
 
     @lonely_players.setter
     def lonely_players(self, new: Round):
@@ -96,25 +99,32 @@ class Tournament:
     def create_round(self):
         around_the_world = Round(self, len(self.rounds_list) + 1)
         around_the_world.create_games()
-        games_list = around_the_world.games_list
 
         self.rounds_list.append(around_the_world)
 
-        return games_list
+        return around_the_world
 
-    def add_player(self, new) -> None:
+    def add_round(self, new) -> None:
+        if type(new) == Round:
+            self._rounds_list.append(new)
+            return
+
+        if type(new) == list:
+            [self.add_round(new) for r in new]
+
+    def add_player(self, new, export=True) -> None:
         """
          If the attribute is a Player object, add it to the players_list.
          If the attribute is a list of Player object, add each of them to the players_list.
         """
         if type(new) == Player:
             self._players_list.append(new)
-            export_tournament_data(self)
+            if export:
+                export_tournament_data(self)
             return
 
         if type(new) == list:
-            for p in new:
-                self.add_player(p)
+            [self.add_player(p, export) for p in new]
 
     @staticmethod
     def was_already_played(actual_player, opponent, game) -> bool:
@@ -153,13 +163,25 @@ class Tournament:
         tournament_info["id"] = str(self.id)
         tournament_info["name"] = self.name
         tournament_info["location"] = self.location
-        tournament_info["number_of_players"] = self.number_of_players
+        tournament_info["number of players"] = self.number_of_players
         tournament_info["Total Number of Rounds"] = self.number_of_rounds
         tournament_info["description"] = self.description
         tournament_info["starting time"] = self.starting_time
         tournament_info["ending time"] = self.ending_time
         tournament_info["list of rounds"] = [around.convert_data() for around in self.rounds_list]
         return tournament_info
+
+    def reconstruct_rounds(self, rounds_data: list):
+        for r in rounds_data:
+            around = Round(self, int(r["name"]))
+            around.starting_time = r["starting time"]
+            around.ending_time = r["ending time"]
+            around.reconstruct_games(r["games"])
+            self.add_round(around)
+
+
+
+
 
 
 

@@ -153,12 +153,16 @@ class View:
         """
         if first_display:
             print("Liste des joueurs prenant part au tournoi :\n")
+            sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
+            for player in sorted_list:
+                print(f"    {player} -> {player.total_points}")
         else:
             print("Classement actuel :\n")
 
-        sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
-        for player in sorted_list:
-            print(f"    {player} -> {player.total_points}")
+            sorted_list = sorted(player_list, key=lambda x: x.tournament_points, reverse=True)
+            for player in sorted_list:
+                print(f"    {player} -> {player.tournament_points}")
+
         print("\n")
 
     @staticmethod
@@ -193,18 +197,22 @@ class View:
             print("   2) Afficher la liste de tous les joueurs par ordre alphabétique")
             print("   3) Afficher la liste de tous les tournois")
             print("   4) Consulter les informations d'un tournoi")
+            print("   Q) Quitter")
             choice = input("")
 
-            if choice == "1" or choice == "2" or choice == "3" or choice == "4":
+            valid_choices = ["1", "2", "3", "4", "q", "Q"]
+            if any(choice == valid for valid in valid_choices):
                 check_answer = True
             else:
-                print("Choix invalide\n")
+                print("\nChoix invalide\n")
 
         return choice
 
     @staticmethod
-    def display_tournament_info(tournament_path):
-        print(tournament_path)
+    def display_tournament_info(tournament: Tournament):
+        print(tournament.name)
+        print(tournament.starting_time)
+
 
 
 
