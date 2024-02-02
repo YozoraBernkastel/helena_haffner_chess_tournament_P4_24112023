@@ -69,11 +69,14 @@ class Player:
     def player_save(self):
         export_player_list(self)
 
-    def format_data(self) -> dict:
+    def format_data(self, all_info=True) -> dict:
         player_info = dict()
         player_info["id"] = self.chess_id
         player_info["name"] = self.family_name
         player_info["firstname"] = self.firstname
-        player_info["birthdate"] = self.birthdate
-        player_info["total points"] = self.total_points
+
+        if all_info:
+            player_info["birthdate"] = self.birthdate
+            player_info["total points"] = self.tournament_points
         return player_info
+

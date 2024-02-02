@@ -1,5 +1,4 @@
 from settings.settings import EXPORT_FOLDER
-
 import os
 from os import path
 import json
@@ -28,10 +27,6 @@ def is_already_known_id(chess_id):
                     return True, player
 
     return False, None
-
-
-def folder_exist(folder_path: str) -> bool:
-    return path.exists(folder_path)
 
 
 def json_file_exists(folder_path: str) -> bool:

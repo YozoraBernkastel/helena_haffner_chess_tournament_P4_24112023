@@ -50,13 +50,13 @@ class Round:
     def round_name(self, new: int):
         self._round_name = new
 
-    @games_list.setter
-    def games_list(self, new: list):
-        self._games_list = new
-
     @tournament.setter
     def tournament(self, new: str):
         self._tournament = new
+
+    @starting_time.setter
+    def starting_time(self, date):
+        self._starting_time = str(date)
 
     @ending_time.setter
     def ending_time(self, date):
@@ -67,9 +67,19 @@ class Round:
         self._lonely_player = new
 
     # Methods
+    def set_ending_time(self):
+        self.ending_time = datetime.datetime.now().replace(microsecond=0)
+
     @staticmethod
     def not_lonely_yet_list(self) -> list:
         return [i for i in self.tournament.players_list if op.countOf(self.tournament.lonely_players, i) == 0]
+
+    def add_game(self, new):
+        if type(new) == Game:
+            self._games_list = new
+            return
+        if type(new) == list:
+            [self.add_game(game) for game in new]
 
     # remove the lonely player of the round to the players_list
     def choose_lonely_player(self):
@@ -112,7 +122,7 @@ class Round:
                     continue
 
                 game = Game(player, possible_opponents[0], self)
-                self._games_list.append(game)
+                self.games_list.append(game)
                 round_players.remove(player)
                 round_players.remove(possible_opponents[0])
 
@@ -141,4 +151,25 @@ class Round:
             round_info["player without game"] = (f"{self.lonely_player.firstname} {self.lonely_player.family_name}"
                                                  f": {self.lonely_player.chess_id}")
         round_info["games"] = [game.convert_data() for game in self.games_list]
+        if self.tournament.odd_players_number():
+            round_info["lonely player"] = self.lonely_player
         return round_info
+
+    def reconstruct_games(self, games_list):
+        for g in games_list:
+            player_one = None
+            player_two = None
+            for player in self.tournament.players_list:
+                if player.chess_id == g["player one"]["id"]:
+                    player_one = player
+
+            for player in self.tournament.players_list:
+                if player.chess_id == g["player two"]["id"]:
+                    player_two = player
+            game = Game(player_one, player_two, self)
+            game.game_result = g["result"]
+
+            self.add_game(g)
+
+
+

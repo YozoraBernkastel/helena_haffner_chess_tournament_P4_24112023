@@ -153,12 +153,16 @@ class View:
         """
         if first_display:
             print("Liste des joueurs prenant part au tournoi :\n")
+            sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
+            for player in sorted_list:
+                print(f"    {player} -> {player.total_points}")
         else:
             print("Classement actuel :\n")
 
-        sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
-        for player in sorted_list:
-            print(f"    {player} -> {player.total_points}")
+            sorted_list = sorted(player_list, key=lambda x: x.tournament_points, reverse=True)
+            for player in sorted_list:
+                print(f"    {player} -> {player.tournament_points}")
+
         print("\n")
 
     @staticmethod
@@ -176,10 +180,48 @@ class View:
     @staticmethod
     def display_tournaments_list(tournaments_list):
         print("Liste des tournois enregistrés :\n")
-        [print(f"   - {tournament[:-9]}") for tournament in tournaments_list]
+        [print(f"   - {tournament}") for tournament in tournaments_list]
 
     @staticmethod
     def choose_tournament_to_display() -> str:
         print("\nDe quel tournoi souhaitez-vous consulter les statistiques ?")
         return input("")
+
+    @staticmethod
+    def display_report_general_menu():
+        choice = ""
+        check_answer = False
+        while not check_answer:
+            print("Quelles informations souhaitez-vous consulter ?\n")
+            print("   1) Afficher le classement général")
+            print("   2) Afficher la liste de tous les joueurs par ordre alphabétique")
+            print("   3) Afficher la liste de tous les tournois")
+            print("   4) Consulter les informations d'un tournoi")
+            print("   Q) Quitter")
+            choice = input("")
+
+            valid_choices = ["1", "2", "3", "4", "q", "Q"]
+            if any(choice == valid for valid in valid_choices):
+                check_answer = True
+            else:
+                print("\nChoix invalide\n")
+
+        return choice
+
+    @staticmethod
+    def display_tournament_info(tournament: Tournament):
+        print(tournament.name)
+        print(tournament.starting_time)
+
+
+
+
+
+    @staticmethod
+    def tournament_folder_not_found():
+        print("Le dossier du tournoi n'a pas été trouvé.")
+        print("Peut-être a-t-il été supprimé, déplacé ou renommé entre le moment où "
+              "la liste des tournoi a été faite et celui où vous avez fait votre choix")
+
+
 
