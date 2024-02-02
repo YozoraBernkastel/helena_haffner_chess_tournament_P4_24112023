@@ -18,7 +18,7 @@ class Controller:
             self.tournament_creation()
 
         if choice == "2":
-            self.display_stats()
+            self.display_report()
 
         if choice == "q" or choice == "Q":
             return
@@ -28,14 +28,14 @@ class Controller:
         # todo comment gérer la liste des lonely lors d'une reprise ? La recalculer à partir des lonely de chaque tour
         #  et simuler les opérations ou bien inclure la liste telle qu'elle dans le json puis la suppriemr à la toute fin ?
 
-        tournament_name = View.tournament_name()
-        tournament_location = View.tournament_location()
+        tournament_name: str = View.tournament_name()
+        tournament_location: str = View.tournament_location()
         # todo demander à écrire une description pour le tournoi !!!
 
         # todo enregistrer après le résultat de chaque partie
 
-        number_of_round = View.round_number()
-        number_of_players = View.number_of_players()
+        number_of_round: int = View.round_number()
+        number_of_players: int = View.number_of_players()
         tournament = Tournament(tournament_name, tournament_location, number_of_players, number_of_round)
 
         created_players = 0
@@ -48,8 +48,8 @@ class Controller:
             while chess_id == "" or already_registered:
                 if chess_id != "":
                     View.already_added(chess_id)
-                chess_id = View.asks_chess_id()
-                already_registered = helper.already_in_tournament(chess_id, tournament)
+                chess_id: str = View.asks_chess_id()
+                already_registered: bool = helper.already_in_tournament(chess_id, tournament)
 
             id_exist, this_player = helper.is_already_known_id(chess_id)
 
@@ -75,24 +75,23 @@ class Controller:
                     View.show_round_lonely_player(game.belong_round)
                     View.show_all_games_of_round(games_list)
 
-                res = View.asks_result(game)
+                res: str = View.asks_result(game)
                 game.game_result = res
                 export_tournament_data(tournament)
 
             View.display_players_score(tournament.players_list, False)
             games_list[-1].belong_round.ending = datetime.datetime.now().replace(microsecond=0)
 
-            if (len(tournament.rounds_list) + 1) == tournament.number_of_rounds:
+            if len(tournament.rounds_list) == tournament.number_of_rounds:
                 tournament.set_ending_time()
-                export_tournament_data(tournament)
+                export_tournament_data(tournament, True)
 
+            # todo mettre en view ou supprimer ?
             if tournament.odd_players_number():
                 print(f"lonely list -> {tournament.lonely_players}\n\n")
 
-        print(tournament.rounds_list)
-
     @staticmethod
-    def display_stats():
+    def display_report():
         tournaments_folder = f"{EXPORT_FOLDER}tournaments/"
         if not helper.folder_exist(tournaments_folder):
             View.no_tournament_found()
@@ -100,11 +99,17 @@ class Controller:
 
         tournaments_list = helper.items_in_folder(tournaments_folder)
         View.display_tournaments_list(tournaments_list)
+        this_tournament: str = ""
 
         existing_tournament = False
         while not existing_tournament:
             this_tournament = View.choose_tournament_to_display()
             existing_tournament = any(this_tournament == tournament[:-9] for tournament in tournaments_list)
+
+        tournament_path = f"{tournaments_folder}{this_tournament}"
+
+        View.display_tournament_info(tournament_path)
+
 
 
 

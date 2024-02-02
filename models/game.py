@@ -78,7 +78,7 @@ class Game:
     # method
     def convert_data(self) -> dict:
         game_info = dict()
-        game_info["player one"] = f"{self.player_one.firstname} {self.player_one.family_name} : {self.player_one.chess_id}"
-        game_info["player_two"] = f"{self.player_two.firstname} {self.player_two.family_name}: {self.player_two.chess_id}"
+        game_info["player one"] = self.player_one.format_data(False)
+        game_info["player_two"] = self.player_two.format_data(False)
         game_info["result"] = self._game_result
         return game_info

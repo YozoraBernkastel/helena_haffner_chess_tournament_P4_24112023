@@ -142,3 +142,4 @@ class Round:
                                                  f": {self.lonely_player.chess_id}")
         round_info["games"] = [game.convert_data() for game in self.games_list]
         return round_info
+

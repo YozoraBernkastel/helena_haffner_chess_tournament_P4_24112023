@@ -6,7 +6,7 @@ from export.export_player_data import export_player_list
 from export.export_player_data import update_global_players_list
 
 
-def export_tournament_data(tournament) -> None:
+def export_tournament_data(tournament, last_save=False) -> None:
     folder_path = f"{EXPORT_FOLDER}tournaments/{tournament.name}_{tournament.starting_time}/"
     if not path.exists(folder_path):
         os.makedirs(folder_path)
@@ -19,7 +19,7 @@ def export_tournament_data(tournament) -> None:
     with open(file_path, "w") as f:
         write_json(f, tournament.convert_data())
 
-    if len(tournament.rounds_list) > 0 and int(tournament.rounds_list[-1].round_name) == tournament.number_of_rounds:
+    if last_save:
         [update_global_players_list(player) for player in tournament.players_list]
 
 

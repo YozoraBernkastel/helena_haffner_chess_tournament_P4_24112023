@@ -183,3 +183,7 @@ class View:
         print("\nDe quel tournoi souhaitez-vous consulter les statistiques ?")
         return input("")
 
+    @staticmethod
+    def display_tournament_info(tournament_path):
+        print("blabla")
+
