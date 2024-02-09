@@ -1,9 +1,9 @@
 from models.round import Round
-from models.round import Game
 from models.player import Player
 from export.export_tournament_data import export_tournament_data
 import uuid
 import datetime
+import json
 
 
 class Tournament:
@@ -85,8 +85,18 @@ class Tournament:
     def lonely_players(self, new: Round):
         self._lonely_players.append(new)
 
-    def set_ending_time(self):
-        self._ending_time = str(datetime.datetime.now().replace(microsecond=0))
+    @starting_time.setter
+    def starting_time(self, new):
+        self._starting_time = new
+
+    # not using the property setter as the function doesn't necessary need an argument to set ending_time
+    def set_ending_time(self, new=""):
+        if new == "":
+            self._ending_time = str(datetime.datetime.now().replace(microsecond=0))
+            print(f"new ending -> {self._ending_time}")
+            return
+        print(f"new ending -> {new}")
+        self._ending_time = new
 
     @description.setter
     def description(self, new):
@@ -164,18 +174,44 @@ class Tournament:
         tournament_info["name"] = self.name
         tournament_info["location"] = self.location
         tournament_info["number of players"] = self.number_of_players
-        tournament_info["Total Number of Rounds"] = self.number_of_rounds
+        tournament_info["total number of rounds"] = self.number_of_rounds
         tournament_info["description"] = self.description
         tournament_info["starting time"] = self.starting_time
         tournament_info["ending time"] = self.ending_time
         tournament_info["list of rounds"] = [around.convert_data() for around in self.rounds_list]
         return tournament_info
 
+    @classmethod
+    def reconstruct_tournament(cls, file_path: str, tournament_name):
+        with open(f"{file_path}/{tournament_name}.json", 'r') as f:
+            tournament_data = json.load(f)
+        tournament = Tournament(tournament_data["name"], tournament_data["location"],
+                                tournament_data["number of players"],
+                                tournament_data["total number of rounds"], False)
+        tournament.id = tournament_data["id"]
+        tournament.description = tournament_data["description"]
+        tournament.starting_time = tournament_data["starting time"]
+        tournament.set_ending_time(tournament_data["ending time"])
+
+        with open(f"{file_path}/players_list.json", "r") as f:
+            players_data = json.load(f)
+
+        players_list = [
+            Player(player["firstname"], player["name"], player["birthdate"], player["id"]
+                   , player["total points"]) for player in players_data]
+        tournament.add_player(players_list, False)
+
+        tournament.reconstruct_rounds(tournament_data["list of rounds"])
+
+        return tournament
+
     def reconstruct_rounds(self, rounds_data: list):
         for r in rounds_data:
             around = Round(self, int(r["name"]))
             around.starting_time = r["starting time"]
             around.ending_time = r["ending time"]
+            if self.odd_players_number():
+                around.lonely_player = r["player without game"]
             around.reconstruct_games(r["games"])
             self.add_round(around)
 

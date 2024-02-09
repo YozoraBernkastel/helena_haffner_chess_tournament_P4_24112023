@@ -5,6 +5,10 @@ import json
 import pathlib
 
 
+def is_user_quits(response: str) -> bool:
+    return any(response == q for q in ("Q", "q"))
+
+
 def already_in_tournament(chess_id, tournament) -> bool:
     tournament_players_path = f"{EXPORT_FOLDER}tournaments/{tournament.name}_{tournament.starting_time}/players_list.json"
 

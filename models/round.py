@@ -76,7 +76,7 @@ class Round:
 
     def add_game(self, new):
         if type(new) == Game:
-            self._games_list = new
+            self._games_list.append(new)
             return
         if type(new) == list:
             [self.add_game(game) for game in new]
@@ -149,10 +149,8 @@ class Round:
         round_info["ending time"] = self.ending_time
         if self.tournament.odd_players_number():
             round_info["player without game"] = (f"{self.lonely_player.firstname} {self.lonely_player.family_name}"
-                                                 f": {self.lonely_player.chess_id}")
+                                                 f"({self.lonely_player.chess_id})")
         round_info["games"] = [game.convert_data() for game in self.games_list]
-        if self.tournament.odd_players_number():
-            round_info["lonely player"] = self.lonely_player
         return round_info
 
     def reconstruct_games(self, games_list):
@@ -169,7 +167,7 @@ class Round:
             game = Game(player_one, player_two, self)
             game.game_result = g["result"]
 
-            self.add_game(g)
+            self.add_game(game)
 
 
 
