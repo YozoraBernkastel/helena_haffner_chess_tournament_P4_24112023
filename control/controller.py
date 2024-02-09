@@ -111,14 +111,8 @@ class Controller:
         if helper.is_user_quits(choice):
             return
 
-    def global_ranking_display(self, alphabetical = False) -> None:
-        players_list = Player.reconstruct_player(self._global_players_folder)
-
-        if alphabetical:
-            players_list = sorted(players_list, key=lambda x: x.family_name, reverse=False)
-        else:
-            players_list = sorted(players_list, key=lambda x: x.total_points, reverse=True)
-
+    def global_ranking_display(self, alphabetical=False) -> None:
+        players_list = Player.reconstruct_player(self._global_players_folder, alphabetical)
         View.display_players_info(players_list)
 
     def tournaments_list(self) -> list:
@@ -158,7 +152,7 @@ class Controller:
     def more_info(tournament) -> None:
         check_more = True
         while check_more:
-            check_more = View.this_tournament_menu(tournament)
+            check_more = View.this_tournament_menu()
             if helper.is_user_quits(check_more):
                 check_more = False
 

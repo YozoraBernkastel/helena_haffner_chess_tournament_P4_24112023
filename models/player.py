@@ -3,14 +3,15 @@ import json
 
 
 class Player:
-    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points):
+    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points,  creation=True):
         self._firstname = first_name
         self._family_name = family_name
         self._birthdate = birthdate
         self._player_chess_id = player_chess_id
         self._total_points = total_points
         self._tournament_points = 0
-        self.player_save()
+        if creation:
+            self.player_save()
 
     def __repr__(self):
         return f"{self._firstname} {self._family_name} ({self._player_chess_id})"
@@ -82,10 +83,15 @@ class Player:
         return player_info
 
     @classmethod
-    def reconstruct_player(cls, file_path) -> list:
+    def reconstruct_player(cls, file_path, alphabetical=False) -> list:
         with open(f"{file_path}/players_list.json", "r") as f:
             players_data = json.load(f)
 
-        return [
+        players_list = [
             Player(player["firstname"], player["name"], player["birthdate"], player["id"]
-                   , player["total points"]) for player in players_data]
+                   , player["total points"], False) for player in players_data]
+
+        if alphabetical:
+            return sorted(players_list, key=lambda x: x.family_name, reverse=False)
+
+        return sorted(players_list, key=lambda x: x.total_points, reverse=True)

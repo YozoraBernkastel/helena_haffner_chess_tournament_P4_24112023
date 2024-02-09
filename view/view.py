@@ -231,7 +231,7 @@ class View:
         print(f"Nombre de tours : {tournament.number_of_rounds}\n")
 
     @staticmethod
-    def this_tournament_menu(tournament: Tournament):
+    def this_tournament_menu():
         print("Souhaitez-vous faire autre chose ?\n")
         check_answer = False
         choice = ""
