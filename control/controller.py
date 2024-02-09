@@ -5,7 +5,6 @@ from view.view import View
 from export.export_tournament_data import export_tournament_data
 import os
 from os import path
-import json
 from settings.settings import EXPORT_FOLDER
 import datetime
 
@@ -131,27 +130,7 @@ class Controller:
 
     @staticmethod
     def reconstruct_tournament(file_path, tournament_name):
-        with open(f"{file_path}/{tournament_name}.json", 'r') as f:
-            tournament_data = json.load(f)
-        tournament = Tournament(tournament_data["name"], tournament_data["location"],
-                                tournament_data["number of players"],
-                                tournament_data["total number of rounds"], False)
-        tournament.id = tournament_data["id"]
-        tournament.description = tournament_data["description"]
-        tournament.starting_time = tournament_data["starting time"]
-        tournament.set_ending_time(tournament_data["ending time"])
-
-        with open(f"{file_path}/players_list.json", "r") as f:
-            players_data = json.load(f)
-
-        players_list = [
-            Player(player["firstname"], player["name"], player["birthdate"], player["id"], player["total points"]) for
-            player in players_data]
-        tournament.add_player(players_list, False)
-
-        tournament.reconstruct_rounds(tournament_data["list of rounds"])
-
-        return tournament
+        return Tournament.reconstruct_tournament(file_path, tournament_name)
 
     def which_tournament(self):
         tournaments_list = self.tournaments_list()
@@ -184,10 +163,10 @@ class Controller:
             if helper.is_user_quits(check_more):
                 check_more = False
 
-            if check_more == "1":
-                View.display_players_info(tournament.players_list)
+            elif check_more == "1":
+                View.display_players_info(tournament.players_list, False)
 
-            if check_more == "2":
+            elif check_more == "2":
                 View.display_rounds_info(tournament.rounds_list, tournament.odd_players_number())
 
     def tournament_info(self):

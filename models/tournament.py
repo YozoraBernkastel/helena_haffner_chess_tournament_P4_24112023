@@ -3,6 +3,7 @@ from models.player import Player
 from export.export_tournament_data import export_tournament_data
 import uuid
 import datetime
+import json
 
 
 class Tournament:
@@ -179,6 +180,30 @@ class Tournament:
         tournament_info["ending time"] = self.ending_time
         tournament_info["list of rounds"] = [around.convert_data() for around in self.rounds_list]
         return tournament_info
+
+    @classmethod
+    def reconstruct_tournament(cls, file_path: str, tournament_name):
+        with open(f"{file_path}/{tournament_name}.json", 'r') as f:
+            tournament_data = json.load(f)
+        tournament = Tournament(tournament_data["name"], tournament_data["location"],
+                                tournament_data["number of players"],
+                                tournament_data["total number of rounds"], False)
+        tournament.id = tournament_data["id"]
+        tournament.description = tournament_data["description"]
+        tournament.starting_time = tournament_data["starting time"]
+        tournament.set_ending_time(tournament_data["ending time"])
+
+        with open(f"{file_path}/players_list.json", "r") as f:
+            players_data = json.load(f)
+
+        players_list = [
+            Player(player["firstname"], player["name"], player["birthdate"], player["id"]
+                   , player["total points"]) for player in players_data]
+        tournament.add_player(players_list, False)
+
+        tournament.reconstruct_rounds(tournament_data["list of rounds"])
+
+        return tournament
 
     def reconstruct_rounds(self, rounds_data: list):
         for r in rounds_data:

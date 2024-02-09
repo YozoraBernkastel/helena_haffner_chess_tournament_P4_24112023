@@ -225,7 +225,7 @@ class View:
         print(f"Nom du Tournoi : {tournament.name}")
         print(f"Localisation : {tournament.location}")
         print(f"Description : {tournament.description}")
-        print(f"Date de démarrage : {tournament.starting_time}")
+        print(f"Date de début : {tournament.starting_time}")
         print(f"Date de fin : {tournament.ending_time}")
         print(f"Nombre de joueurs : {tournament.number_of_players}")
         print(f"Nombre de tours : {tournament.number_of_rounds}\n")
@@ -264,10 +264,8 @@ class View:
             if odd_players:
                 print(f"  Joueur sans partie : {r.lonely_player}")
 
-            print("")
-            game_number = 0
-            for game in r.games_list:
-                game_number += 1
-                print(f"\n  Partie n°{game_number} :")
+            for i, game in enumerate(r.games_list):
+                print(f"\n  Partie n°{i+1} :")
                 print(f"    {game.player_one} contre {game.player_two}")
                 print(f"    {game.game_result}")
+            print("")
