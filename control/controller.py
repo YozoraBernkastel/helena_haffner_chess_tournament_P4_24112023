@@ -13,6 +13,7 @@ class Controller:
 
     def __init__(self):
         self._tournaments_folder = f"{EXPORT_FOLDER}tournaments/"
+        self._global_players_folder = f"{EXPORT_FOLDER}global_players_list/"
 
     def display_menu(self):
         choice = View.display_menu()
@@ -96,13 +97,13 @@ class Controller:
         # todo !!!!!!!!! afficher le classement avec le nombre de points remporté dans le tournoi
         #  afin d'avoir le classement du tournoi et non le classement global !!!
 
-    def display_report(self):
+    def display_report(self) -> None:
         choice = View.display_report_general_menu()
 
         if choice == "1":
-            self.global_ranking_display("points")
+            self.global_ranking_display()
         if choice == "2":
-            self.global_ranking_display("alphabetical")
+            self.global_ranking_display(True)
         if choice == "3":
             self.tournaments_list()
         if choice == "4":
@@ -110,13 +111,15 @@ class Controller:
         if helper.is_user_quits(choice):
             return
 
-    @staticmethod
-    def global_ranking_display(sort_by):
-        # todo afficher la liste des joueurs par odre alphabétique et le classement général
-        # récupérer liste des joueurs dans le json global_players_list
-        # puis trier en fonction de sort_by
-        # appeler View.display_players_info(list des joueurs)
-        print("en construction")
+    def global_ranking_display(self, alphabetical = False) -> None:
+        players_list = Player.reconstruct_player(self._global_players_folder)
+
+        if alphabetical:
+            players_list = sorted(players_list, key=lambda x: x.family_name, reverse=False)
+        else:
+            players_list = sorted(players_list, key=lambda x: x.total_points, reverse=True)
+
+        View.display_players_info(players_list)
 
     def tournaments_list(self) -> list:
 
@@ -127,10 +130,6 @@ class Controller:
 
         View.no_tournament_found()
         return []
-
-    @staticmethod
-    def reconstruct_tournament(file_path, tournament_name):
-        return Tournament.reconstruct_tournament(file_path, tournament_name)
 
     def which_tournament(self):
         tournaments_list = self.tournaments_list()
@@ -156,7 +155,7 @@ class Controller:
         return tournament_path
 
     @staticmethod
-    def more_info(tournament):
+    def more_info(tournament) -> None:
         check_more = True
         while check_more:
             check_more = View.this_tournament_menu(tournament)
@@ -164,12 +163,12 @@ class Controller:
                 check_more = False
 
             elif check_more == "1":
-                View.display_players_info(tournament.players_list, False)
+                View.display_players_info(tournament.players_list)
 
             elif check_more == "2":
                 View.display_rounds_info(tournament.rounds_list, tournament.odd_players_number())
 
-    def tournament_info(self):
+    def tournament_info(self) -> None:
         this_tournament = self.which_tournament()
         if not this_tournament or helper.is_user_quits(this_tournament):
             return
@@ -178,7 +177,7 @@ class Controller:
         if not tournament_path:
             return
 
-        tournament: Tournament = self.reconstruct_tournament(tournament_path, this_tournament)
+        tournament = Tournament.reconstruction(tournament_path, this_tournament)
         View.display_tournament_info(tournament)
         self.more_info(tournament)
 

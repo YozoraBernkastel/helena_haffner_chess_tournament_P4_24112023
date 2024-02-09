@@ -246,14 +246,13 @@ class View:
         return choice
 
     @staticmethod
-    def display_players_info(players_list, general=True):
+    def display_players_info(players_list):
         for p in players_list:
-            points = p.total_points if general else p.tournament_points
             print(f"Nom : {p.family_name}")
             print(f"Prénom : {p.firstname}")
             print(f"ID : {p.chess_id}")
             print(f"Date de naissance : {p.birthdate}")
-            print(f"Points : {points}\n")
+            print(f"Points : {p.total_points}\n")
 
     @staticmethod
     def display_rounds_info(rounds_list, odd_players):

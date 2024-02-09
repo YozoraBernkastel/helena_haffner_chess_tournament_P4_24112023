@@ -1,4 +1,5 @@
 from export.export_player_data import export_player_list
+import json
 
 
 class Player:
@@ -80,3 +81,11 @@ class Player:
             player_info["total points"] = self.tournament_points
         return player_info
 
+    @classmethod
+    def reconstruct_player(cls, file_path) -> list:
+        with open(f"{file_path}/players_list.json", "r") as f:
+            players_data = json.load(f)
+
+        return [
+            Player(player["firstname"], player["name"], player["birthdate"], player["id"]
+                   , player["total points"]) for player in players_data]
