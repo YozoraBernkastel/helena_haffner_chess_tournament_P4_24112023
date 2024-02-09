@@ -1,15 +1,17 @@
 from export.export_player_data import export_player_list
+import json
 
 
 class Player:
-    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points):
+    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points: float,  creation=True):
         self._firstname = first_name
         self._family_name = family_name
         self._birthdate = birthdate
         self._player_chess_id = player_chess_id
         self._total_points = total_points
-        self._tournament_points = 0
-        self.player_save()
+        self._tournament_points = 0.0
+        if creation:
+            self.player_save()
 
     def __repr__(self):
         return f"{self._firstname} {self._family_name} ({self._player_chess_id})"
@@ -50,7 +52,7 @@ class Player:
         self._family_name = new
 
     @birthdate.setter
-    def birthdate(self, new: int):
+    def birthdate(self, new: str):
         self._birthdate = new
 
     @chess_id.setter
@@ -58,11 +60,11 @@ class Player:
         self._player_chess_id = new
 
     @total_points.setter
-    def total_points(self, new: int):
+    def total_points(self, new: float):
         self._total_points += new
 
     @tournament_points.setter
-    def tournament_points(self, new: int):
+    def tournament_points(self, new: float):
         self._tournament_points += new
 
     # Methods
@@ -80,3 +82,16 @@ class Player:
             player_info["total points"] = self.tournament_points
         return player_info
 
+    @classmethod
+    def reconstruct_player(cls, file_path, alphabetical=False) -> list:
+        with open(f"{file_path}/players_list.json", "r") as f:
+            players_data = json.load(f)
+
+        players_list = [
+            Player(player["firstname"], player["name"], player["birthdate"], player["id"]
+                   , player["total points"], False) for player in players_data]
+
+        if alphabetical:
+            return sorted(players_list, key=lambda x: x.family_name, reverse=False)
+
+        return sorted(players_list, key=lambda x: x.total_points, reverse=True)

@@ -179,10 +179,11 @@ class Tournament:
         tournament_info["starting time"] = self.starting_time
         tournament_info["ending time"] = self.ending_time
         tournament_info["list of rounds"] = [around.convert_data() for around in self.rounds_list]
+
         return tournament_info
 
     @classmethod
-    def reconstruct_tournament(cls, file_path: str, tournament_name):
+    def reconstruction(cls, file_path: str, tournament_name):
         with open(f"{file_path}/{tournament_name}.json", 'r') as f:
             tournament_data = json.load(f)
         tournament = Tournament(tournament_data["name"], tournament_data["location"],
@@ -193,14 +194,8 @@ class Tournament:
         tournament.starting_time = tournament_data["starting time"]
         tournament.set_ending_time(tournament_data["ending time"])
 
-        with open(f"{file_path}/players_list.json", "r") as f:
-            players_data = json.load(f)
-
-        players_list = [
-            Player(player["firstname"], player["name"], player["birthdate"], player["id"]
-                   , player["total points"]) for player in players_data]
+        players_list = Player.reconstruct_player(file_path)
         tournament.add_player(players_list, False)
-
         tournament.reconstruct_rounds(tournament_data["list of rounds"])
 
         return tournament
