@@ -51,6 +51,11 @@ class View:
         return choice
 
     @staticmethod
+    def tournament_description():
+        print("Description du tournoi (touche entrée pour passer) :")
+        return input("")
+
+    @staticmethod
     def number_of_players() -> int:
         players_number = 0
         while players_number < 2:
@@ -181,6 +186,7 @@ class View:
     def display_tournaments_list(tournaments_list):
         print("Liste des tournois enregistrés :\n")
         [print(f"   - {tournament}") for tournament in tournaments_list]
+        print("   Q) pour quitter")
 
     @staticmethod
     def choose_tournament_to_display() -> str:
@@ -209,19 +215,59 @@ class View:
         return choice
 
     @staticmethod
-    def display_tournament_info(tournament: Tournament):
-        print(tournament.name)
-        print(tournament.starting_time)
-
-
-
-
-
-    @staticmethod
     def tournament_folder_not_found():
         print("Le dossier du tournoi n'a pas été trouvé.")
         print("Peut-être a-t-il été supprimé, déplacé ou renommé entre le moment où "
               "la liste des tournoi a été faite et celui où vous avez fait votre choix")
 
+    @staticmethod
+    def display_tournament_info(tournament: Tournament):
+        print(f"Nom du Tournoi : {tournament.name}")
+        print(f"Localisation : {tournament.location}")
+        print(f"Description : {tournament.description}")
+        print(f"Date de démarrage : {tournament.starting_time}")
+        print(f"Date de fin : {tournament.ending_time}")
+        print(f"Nombre de joueurs : {tournament.number_of_players}")
+        print(f"Nombre de tours : {tournament.number_of_rounds}\n")
 
+    @staticmethod
+    def this_tournament_menu(tournament: Tournament):
+        print("Souhaitez-vous faire autre chose ?\n")
+        check_answer = False
+        choice = ""
+        while not check_answer:
+            print("    1) Consulter la liste des joueurs")
+            print("    2) Consulter la liste des tours")
+            print("    Q) Quitter")
+            choice = input("")
 
+            if choice == "1" or choice == "2" or choice == "Q" or choice == "q":
+                check_answer = True
+        return choice
+
+    @staticmethod
+    def display_players_info(players_list, general=True):
+        for p in players_list:
+            points = p.total_points if general else p.tournament_points
+            print(f"Nom : {p.family_name}")
+            print(f"Prénom : {p.firstname}")
+            print(f"ID : {p.chess_id}")
+            print(f"Date de naissance : {p.birthdate}")
+            print(f"Points : {points}\n")
+
+    @staticmethod
+    def display_rounds_info(rounds_list, odd_players):
+        for r in rounds_list:
+            print(f"Tour n° {r.round_name}")
+            print(f"  Début du tour {r.starting_time}")
+            print(f"  Fin du tour {r.ending_time}")
+            if odd_players:
+                print(f"  Joueur sans partie : {r.lonely_player}")
+
+            print("")
+            game_number = 0
+            for game in r.games_list:
+                game_number += 1
+                print(f"\n  Partie n°{game_number} :")
+                print(f"    {game.player_one} contre {game.player_two}")
+                print(f"    {game.game_result}")
