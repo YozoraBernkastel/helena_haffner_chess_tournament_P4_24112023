@@ -3,13 +3,13 @@ import json
 
 
 class Player:
-    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points,  creation=True):
+    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points: float,  creation=True):
         self._firstname = first_name
         self._family_name = family_name
         self._birthdate = birthdate
         self._player_chess_id = player_chess_id
         self._total_points = total_points
-        self._tournament_points = 0
+        self._tournament_points = 0.0
         if creation:
             self.player_save()
 
@@ -52,7 +52,7 @@ class Player:
         self._family_name = new
 
     @birthdate.setter
-    def birthdate(self, new: int):
+    def birthdate(self, new: str):
         self._birthdate = new
 
     @chess_id.setter
@@ -60,11 +60,11 @@ class Player:
         self._player_chess_id = new
 
     @total_points.setter
-    def total_points(self, new: int):
+    def total_points(self, new: float):
         self._total_points += new
 
     @tournament_points.setter
-    def tournament_points(self, new: int):
+    def tournament_points(self, new: float):
         self._tournament_points += new
 
     # Methods

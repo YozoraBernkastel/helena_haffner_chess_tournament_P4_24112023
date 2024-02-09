@@ -12,7 +12,6 @@ def update_player_list(json_data, player, total_points: bool) -> list:
             found = True
             json_player["total points"] = player.total_points if total_points else player.tournament_points
 
-
     if not found:
         new_player_data = player.format_data()
         json_data.append(new_player_data)

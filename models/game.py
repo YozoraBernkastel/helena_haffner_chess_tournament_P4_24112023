@@ -59,24 +59,28 @@ class Game:
     def game_result(self, result):
         self._game_result = result
 
-    def set_result(self, res: str):
-        if res == "1":
-            self._player_one.total_points = 1
-            self._player_one.tournament_points = 1
-            self.game_result = f"victoire de {self._player_one}"
-            return
+    def victory_points(self, player: Player):
+        player.total_points = 1.0
+        player.tournament_points = 1.0
+        self.game_result = f"victoire de {player}"
 
-        if res == "2":
-            self._player_two.total_points = 1
-            self._player_two.tournament_points = 1
-            self.game_result = f"victoire de {self._player_two}"
-            return
-
+    def stalemate_points(self):
         self._player_one.total_points = 0.5
         self._player_one.tournament_points = 0.5
         self._player_two.total_points = 0.5
         self._player_two.tournament_points = 0.5
         self.game_result = "match nul"
+
+    def set_result(self, res: str):
+        if res == "1":
+            self.victory_points(self.player_one)
+            return
+
+        if res == "2":
+            self.victory_points(self.player_two)
+            return
+
+        self.stalemate_points()
 
     # method
     def convert_data(self) -> dict:
