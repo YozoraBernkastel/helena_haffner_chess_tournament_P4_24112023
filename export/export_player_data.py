@@ -52,10 +52,3 @@ def update_global_players_list(player) -> None:
 
         with open(file_path, "w") as f:
             write_json(f, data)
-
-
-
-
-
-
-

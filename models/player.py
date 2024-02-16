@@ -3,7 +3,8 @@ import json
 
 
 class Player:
-    def __init__(self, first_name: str, family_name: str, birthdate, player_chess_id: str, total_points: float,  creation=True):
+    def __init__(self, first_name: str, family_name: str, birthdate,
+                 player_chess_id: str, total_points: float, creation=True):
         self._firstname = first_name
         self._family_name = family_name
         self._birthdate = birthdate
@@ -88,8 +89,8 @@ class Player:
             players_data = json.load(f)
 
         players_list = [
-            Player(player["firstname"], player["name"], player["birthdate"], player["id"]
-                   , player["total points"], False) for player in players_data]
+            Player(player["firstname"], player["name"], player["birthdate"], player["id"],
+                   player["total points"], False) for player in players_data]
 
         if alphabetical:
             return sorted(players_list, key=lambda x: x.family_name, reverse=False)

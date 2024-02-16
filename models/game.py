@@ -8,7 +8,7 @@ class Game:
         self._round = round_object
         self._tournament = round_object.tournament
         self._game_id = f"{round}-{player_one.chess_id}-{player_two}"
-        self._game_result: str = "La partie n'est pas terminée"
+        self._game_result = False
 
     def __repr__(self):
         return f"{self._player_one} vs {self._player_two}"
@@ -87,5 +87,6 @@ class Game:
         game_info = dict()
         game_info["player one"] = self.player_one.format_data(False)
         game_info["player two"] = self.player_two.format_data(False)
-        game_info["result"] = self._game_result
+        game_info["result"] = self.game_result
+
         return game_info

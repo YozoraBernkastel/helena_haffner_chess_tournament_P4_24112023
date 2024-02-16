@@ -75,10 +75,10 @@ class Round:
         return [i for i in self.tournament.players_list if op.countOf(self.tournament.lonely_players, i) == 0]
 
     def add_game(self, new):
-        if type(new) == Game:
+        if isinstance(new, Game):
             self._games_list.append(new)
             return
-        if type(new) == list:
+        if isinstance(new, list):
             [self.add_game(game) for game in new]
 
     # remove the lonely player of the round to the players_list
@@ -114,8 +114,10 @@ class Round:
                     count = 0
 
                 possible_opponents = [opponent for opponent in round_players if opponent is not player]
-                possible_opponents = self.tournament.no_repeat_game(player, possible_opponents) if len(self.players_list) > 3 \
-                    else possible_opponents
+
+                if len(self.players_list) > 3:
+                    possible_opponents = self.tournament.no_repeat_game(player, possible_opponents)
+
                 if len(possible_opponents) == 0:
                     continue
 
@@ -127,7 +129,11 @@ class Round:
     def create_games(self):
         if len(self.games_list) > 0:
             self.games_list.clear()
-        round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
+
+        round_players_list = self.tournament.players_list
+        if self.tournament.odd_players_number():
+            round_players_list = self.compute_lonely()
+
         round_players_list = self.sort_players_list(round_players_list)
         self.round_matchmaking(round_players_list)
 
@@ -173,6 +179,3 @@ class Round:
             game.game_result = g["result"]
 
             self.add_game(game)
-
-
-

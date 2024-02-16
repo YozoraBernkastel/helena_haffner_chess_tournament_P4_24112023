@@ -2,11 +2,12 @@ from models.tournament import Tournament
 from models.player import Player
 import control.controller_helper as helper
 from view.view import View
-from export.export_tournament_data import export_tournament_data
+from export.export_tournament_data import (export_tournament_data,
+                                           add_tournament_to_unfinished_list,
+                                           remove_tournament_from_unfinished_list)
 import os
 from os import path
 from settings.settings import EXPORT_FOLDER
-import datetime
 
 
 class Controller:
@@ -20,8 +21,13 @@ class Controller:
 
         if choice == "1":
             self.tournament_creation()
+            return
         if choice == "2":
             self.display_report()
+            return
+        if choice == "3":
+            self.restart_tournament()
+            return
         if helper.is_user_quits(choice):
             return
 
@@ -34,6 +40,7 @@ class Controller:
         number_of_players: int = View.number_of_players()
         tournament = Tournament(tournament_name, tournament_location,
                                 number_of_players, number_of_round)
+        add_tournament_to_unfinished_list(tournament)
 
         # tournament's description is set here because the object should be initialized
         # even if it's more natural for the user to written it after the name and the location.
@@ -42,8 +49,21 @@ class Controller:
         return tournament
 
     @staticmethod
-    def players_registration(tournament):
-        created_players = 0
+    def create_player(tournament, chess_id):
+        id_exist, this_player = helper.is_already_known_id(chess_id)
+
+        if id_exist:
+            View.known_player_prompt(chess_id)
+            firstname, name, birthdate, total_points = this_player["firstname"], this_player["name"], this_player[
+                "birthdate"], this_player["total points"]
+        else:
+            firstname, name, birthdate = View.players_registration(tournament)
+            total_points = 0
+
+        return Player(firstname, name, birthdate, chess_id, total_points)
+
+    def players_registration(self, tournament):
+        created_players = len(tournament.players_list)
         while tournament.number_of_players > created_players:
             created_players += 1
             chess_id = ""
@@ -55,17 +75,7 @@ class Controller:
                 chess_id: str = View.asks_chess_id()
                 already_registered: bool = helper.already_in_tournament(chess_id, tournament)
 
-            id_exist, this_player = helper.is_already_known_id(chess_id)
-
-            if id_exist:
-                View.known_player_prompt(chess_id)
-                firstname, name, birthdate, total_points = this_player["firstname"], this_player["name"], this_player[
-                    "birthdate"], this_player["total points"]
-            else:
-                firstname, name, birthdate = View.players_registration(tournament)
-                total_points = 0
-
-            player = Player(firstname, name, birthdate, chess_id, total_points)
+            player = self.create_player(tournament, chess_id)
             tournament.add_player(player)
 
         View.display_players_score(tournament.players_list, True)
@@ -73,35 +83,42 @@ class Controller:
     @staticmethod
     def games_generation(around, tournament):
         for game in around.games_list:
-            res: str = View.asks_result(game)
-            game.set_result(res)
-            export_tournament_data(tournament)
+            if not game.game_result:
+                res: str = View.asks_result(game)
+                game.set_result(res)
+                export_tournament_data(tournament)
 
     def rounds_generation(self, tournament):
         while len(tournament.rounds_list) != tournament.number_of_rounds:
             around = tournament.create_round()
-            # todo appeler ces trois méthodes dans une seule !!!!!!!!!!!!!!!
-            View.show_round_number(around)
-            View.show_round_lonely_player(around)
-            View.show_all_games_of_round(around.games_list)
+            View.display_round_info(around)
             self.games_generation(around, tournament)
 
             is_last_round: bool = int(around.round_name) == tournament.number_of_rounds
             View.display_players_score(tournament.players_list, False, is_last_round)
             around.set_ending_time()
 
-            # todo mettre en view ou supprimer ?
             if tournament.odd_players_number():
-                print(f"lonely list -> {tournament.lonely_players}\n\n")
+                View.display_lonely_players_list(tournament.lonely_players)
 
-    def tournament_creation(self):
-        # todo comment gérer la liste des lonely lors d'une reprise ? La recalculer à partir des lonely de chaque tour
-        #  et simuler les opérations ou bien inclure la liste telle qu'elle dans le json puis la suppriemr à la toute fin ?
-        tournament = self.initiate_tournament()
-        self.players_registration(tournament)
-        self.rounds_generation(tournament)
+    @staticmethod
+    def close_tournament(tournament):
         tournament.set_ending_time()
         export_tournament_data(tournament, True)
+        remove_tournament_from_unfinished_list(tournament)
+
+    def tournament_creation(self, tournament=None, reconstruct=False):
+        if not reconstruct:
+            tournament = self.initiate_tournament()
+
+        self.players_registration(tournament)
+
+        if reconstruct:
+            if len(tournament.rounds_list) > 0:
+                self.games_generation(tournament.rounds_list[-1], tournament)
+
+        self.rounds_generation(tournament)
+        self.close_tournament(tournament)
 
     def display_report(self) -> None:
         choice = View.display_report_general_menu()
@@ -111,7 +128,7 @@ class Controller:
         if choice == "2":
             self.global_ranking_display(True)
         if choice == "3":
-            self.tournaments_list()
+            View.display_tournaments_list(self.tournaments_list())
         if choice == "4":
             self.tournament_info()
         if helper.is_user_quits(choice):
@@ -122,21 +139,20 @@ class Controller:
         View.display_players_info(players_list)
 
     def tournaments_list(self) -> list:
-
+        tournaments_list = list()
         if path.exists(self._tournaments_folder) and len(os.listdir(self._tournaments_folder)) > 0:
             tournaments_list = helper.items_in_folder(self._tournaments_folder)
-            View.display_tournaments_list(tournaments_list)
-            return tournaments_list
 
-        View.no_tournament_found()
-        return []
+        return tournaments_list
 
-    def which_tournament(self):
-        tournaments_list = self.tournaments_list()
+    @staticmethod
+    def which_tournament(tournaments_list):
 
         if len(tournaments_list) == 0:
+            View.no_tournament_found()
             return False
 
+        View.display_tournaments_list(tournaments_list)
         this_tournament: str = ""
         existing_tournament = False
 
@@ -168,19 +184,28 @@ class Controller:
             elif check_more == "2":
                 View.display_rounds_info(tournament.rounds_list, tournament.odd_players_number())
 
-    def tournament_info(self) -> None:
-        this_tournament = self.which_tournament()
+    def reconstruct_selected_tournament(self):
+        this_tournament = self.which_tournament(self.tournaments_list())
         if not this_tournament or helper.is_user_quits(this_tournament):
-            return
+            return False
 
         tournament_path = self.tournament_path_creation(this_tournament)
         if not tournament_path:
+            return False
+
+        return Tournament.reconstruction(tournament_path, this_tournament)
+
+    def tournament_info(self) -> None:
+        tournament = self.reconstruct_selected_tournament()
+        if isinstance(tournament, Tournament):
+            View.display_tournament_info(tournament)
+            self.more_info(tournament)
+
+    def restart_tournament(self) -> None:
+        unfinished_tournaments_list = helper.unfinished_tournaments()
+        if not unfinished_tournaments_list:
+            View.all_tournaments_are_finished()
             return
 
-        tournament = Tournament.reconstruction(tournament_path, this_tournament)
-        View.display_tournament_info(tournament)
-        self.more_info(tournament)
-
-
-# todo il faudra transformer les json data en objet tournament (etc) pour pouvoir
-#  utiliser les mêmes fonctions à l'affichage et à la reprise ?? Ou était-ce pour l'affichage à la fin du tournoi ?
+        tournament = self.reconstruct_selected_tournament()
+        self.tournament_creation(tournament, True)
