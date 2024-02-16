@@ -103,6 +103,15 @@ class Tournament:
         self._description = new
 
     # methods
+    def reset_lonely_players_list(self) -> None:
+        """
+         # When all the players skipped a round, lonely players list should only remember
+         the lonely player of the last round.
+        :return: None
+        """
+        if len(self.lonely_players) >= len(self.players_list):
+            self._lonely_players = [self.lonely_players[-1]]
+
     def odd_players_number(self) -> bool:
         return self.number_of_players % 2 != 0
 

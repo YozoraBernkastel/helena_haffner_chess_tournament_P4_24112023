@@ -89,9 +89,7 @@ class Round:
 
     def compute_lonely(self):
         # if there is more rounds than players number,
-        if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
-            # reset the lonely players list when all of them skipped a round
-            self.tournament.lonely_players.clear()
+        self.tournament.reset_lonely_players_list()
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
@@ -116,7 +114,7 @@ class Round:
                     count = 0
 
                 possible_opponents = [opponent for opponent in round_players if opponent is not player]
-                possible_opponents = self.tournament.no_repeat_game(player, possible_opponents) if len(self.players_list) > 4 \
+                possible_opponents = self.tournament.no_repeat_game(player, possible_opponents) if len(self.players_list) > 3 \
                     else possible_opponents
                 if len(possible_opponents) == 0:
                     continue
@@ -130,17 +128,24 @@ class Round:
         if len(self.games_list) > 0:
             self.games_list.clear()
         round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
-        round_players_list = self.sort_custom_player_list(round_players_list)
+        round_players_list = self.sort_players_list(round_players_list)
         self.round_matchmaking(round_players_list)
 
         self.tournament.lonely_players.append(self.lonely_player)
 
     @staticmethod
-    def sort_custom_player_list(players_list):
+    def sort_tournament_points_player_list(players_list):
+        return sorted(players_list, key=lambda x: x.tournament_points, reverse=True) \
+
+
+    @staticmethod
+    def sort_total_points_player_list(players_list):
         return sorted(players_list, key=lambda x: x.total_points, reverse=True)
 
-    def sort_player_list(self):
-        return self.sort_custom_player_list(self.tournament.players_list)
+    def sort_players_list(self, players_list):
+        return self.sort_tournament_points_player_list(players_list) \
+            if int(self.round_name) > 1 \
+            else self.sort_total_points_player_list(players_list)
 
     def convert_data(self) -> dict:
         round_info = dict()

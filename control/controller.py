@@ -26,23 +26,25 @@ class Controller:
             return
 
     @staticmethod
-    def tournament_creation():
-        # todo comment gérer la liste des lonely lors d'une reprise ? La recalculer à partir des lonely de chaque tour
-        #  et simuler les opérations ou bien inclure la liste telle qu'elle dans le json puis la suppriemr à la toute fin ?
-
+    def initiate_tournament():
         tournament_name: str = View.tournament_name()
         tournament_location: str = View.tournament_location()
         description: str = View.tournament_description()
         number_of_round: int = View.round_number()
         number_of_players: int = View.number_of_players()
-        tournament = Tournament(tournament_name, tournament_location, number_of_players, number_of_round)
+        tournament = Tournament(tournament_name, tournament_location,
+                                number_of_players, number_of_round)
 
         # tournament's description is set here because the object should be initialized
         # even if it's more natural for the user to written it after the name and the location.
         tournament.description = description
 
+        return tournament
+
+    @staticmethod
+    def players_registration(tournament):
         created_players = 0
-        while number_of_players > created_players:
+        while tournament.number_of_players > created_players:
             created_players += 1
             chess_id = ""
             already_registered = False
@@ -68,34 +70,38 @@ class Controller:
 
         View.display_players_score(tournament.players_list, True)
 
-        while len(tournament.rounds_list) != number_of_round:
-            around = tournament.create_round()
+    @staticmethod
+    def games_generation(around, tournament):
+        for game in around.games_list:
+            res: str = View.asks_result(game)
+            game.set_result(res)
+            export_tournament_data(tournament)
 
+    def rounds_generation(self, tournament):
+        while len(tournament.rounds_list) != tournament.number_of_rounds:
+            around = tournament.create_round()
             # todo appeler ces trois méthodes dans une seule !!!!!!!!!!!!!!!
             View.show_round_number(around)
             View.show_round_lonely_player(around)
             View.show_all_games_of_round(around.games_list)
+            self.games_generation(around, tournament)
 
-            for game in around.games_list:
-                res: str = View.asks_result(game)
-                game.set_result(res)
-                export_tournament_data(tournament)
-
-            View.display_players_score(tournament.players_list, False)
+            is_last_round: bool = int(around.round_name) == tournament.number_of_rounds
+            View.display_players_score(tournament.players_list, False, is_last_round)
             around.set_ending_time()
 
             # todo mettre en view ou supprimer ?
             if tournament.odd_players_number():
                 print(f"lonely list -> {tournament.lonely_players}\n\n")
 
-            around.set_ending_time()
-
-        print(f"supposed ending -> {datetime.datetime.now().replace(microsecond=0)}")
+    def tournament_creation(self):
+        # todo comment gérer la liste des lonely lors d'une reprise ? La recalculer à partir des lonely de chaque tour
+        #  et simuler les opérations ou bien inclure la liste telle qu'elle dans le json puis la suppriemr à la toute fin ?
+        tournament = self.initiate_tournament()
+        self.players_registration(tournament)
+        self.rounds_generation(tournament)
         tournament.set_ending_time()
         export_tournament_data(tournament, True)
-
-        # todo !!!!!!!!! afficher le classement avec le nombre de points remporté dans le tournoi
-        #  afin d'avoir le classement du tournoi et non le classement global !!!
 
     def display_report(self) -> None:
         choice = View.display_report_general_menu()

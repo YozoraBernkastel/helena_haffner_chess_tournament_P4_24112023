@@ -150,9 +150,10 @@ class View:
         return int(number)
 
     @staticmethod
-    def display_players_score(player_list: list, first_display=False) -> None:
+    def display_players_score(player_list: list, first_display=False, last_display=False) -> None:
         """
-        :param first_display:
+        :param last_display: change introduction print for the last display of the tournament
+        :param first_display: change introduction print for the first display of the tournament
         :param player_list: list containing one or more players
         :return: print the total point of each player.
         """
@@ -160,13 +161,13 @@ class View:
             print("Liste des joueurs prenant part au tournoi :\n")
             sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
             for player in sorted_list:
-                print(f"    {player} -> {player.total_points}")
+                print(f"    {player} -> {player.total_points} points")
         else:
-            print("Classement actuel :\n")
+            print("Classement actuel :\n") if not last_display else print("Classement final : \n")
 
             sorted_list = sorted(player_list, key=lambda x: x.tournament_points, reverse=True)
             for player in sorted_list:
-                print(f"    {player} -> {player.tournament_points}")
+                print(f"    {player} -> {player.tournament_points} points")
 
         print("\n")
 
