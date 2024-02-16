@@ -1,2 +1,2 @@
-AUTOCOMPLETE = True
+AUTOCOMPLETE = False
 EXPORT_FOLDER = "outputs/"

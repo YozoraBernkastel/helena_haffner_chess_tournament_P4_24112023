@@ -10,7 +10,7 @@ def is_user_quits(response: str) -> bool:
 
 
 def already_in_tournament(chess_id, tournament) -> bool:
-    tournament_players_path = f"{EXPORT_FOLDER}tournaments/{tournament.name}_{tournament.starting_time}/players_list.json"
+    tournament_players_path = f"{EXPORT_FOLDER}tournaments/{tournament.export_name}/players_list.json"
 
     if path.exists(tournament_players_path):
         with open(tournament_players_path, "r") as f:
@@ -48,3 +48,15 @@ def items_in_folder(folder_path) -> list:
     all_dir = [item for item in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, item))]
 
     return [item for item in all_dir if json_file_exists(f"{folder_path}{item}")]
+
+
+def unfinished_tournaments() -> list:
+    not_ended_file = f"{EXPORT_FOLDER}unfinished_tournaments_list/unfinished_tournaments_list.json"
+    data = list()
+    if path.exists(not_ended_file):
+        with open(not_ended_file, "r") as f:
+            data = json.load(f)
+
+    data = [t["folder"] for t in data]
+
+    return data if len(data) > 0 else False

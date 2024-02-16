@@ -31,6 +31,7 @@ class View:
             print("\nBienvenue ! Que souhaitez-vous faire ?\n")
             print("    1) Créer un tournoi")
             print("    2) Voir les statistiques")
+            print("    3) Continuer un tournoi en cours")
             print("    Q) Quitter\n")
             choice = input("")
             choice = choice.strip()
@@ -39,14 +40,15 @@ class View:
                 print("\nNouveau tournoi lancé !!!")
                 check_answer = True
 
-            elif choice == "2":
+            elif choice == "2" or choice == "3":
                 check_answer = True
 
             elif choice == "Q" or choice == "q":
                 break
             else:
                 print(
-                    "\nCette option n'existe malheureusement pas, veuillez sélectionner une commande valide parmi la liste\n")
+                    "\nCette option n'existe malheureusement pas,"
+                    " veuillez sélectionner une commande valide parmi la liste\n")
 
         return choice
 
@@ -86,7 +88,7 @@ class View:
 
     @staticmethod
     def show_all_games_of_round(games_list: list) -> None:
-        print(f"Liste des parties du round :")
+        print("Liste des parties du round :")
         for game in games_list:
             print(game)
         print("\n")
@@ -95,6 +97,12 @@ class View:
     def show_round_lonely_player(actual_round: Round) -> None:
         if actual_round.tournament.odd_players_number():
             print(f"{actual_round.lonely_player} ne jouera pas durant ce Round.\n")
+
+    @staticmethod
+    def display_round_info(around: Round) -> None:
+        View.show_round_number(around)
+        View.show_round_lonely_player(around)
+        View.show_all_games_of_round(around.games_list)
 
     @staticmethod
     def asks_result(game: Game) -> str:
@@ -150,9 +158,10 @@ class View:
         return int(number)
 
     @staticmethod
-    def display_players_score(player_list: list, first_display=False) -> None:
+    def display_players_score(player_list: list, first_display=False, last_display=False) -> None:
         """
-        :param first_display:
+        :param last_display: change introduction print for the last display of the tournament
+        :param first_display: change introduction print for the first display of the tournament
         :param player_list: list containing one or more players
         :return: print the total point of each player.
         """
@@ -160,15 +169,22 @@ class View:
             print("Liste des joueurs prenant part au tournoi :\n")
             sorted_list = sorted(player_list, key=lambda x: x.total_points, reverse=True)
             for player in sorted_list:
-                print(f"    {player} -> {player.total_points}")
+                print(f"    {player} -> {player.total_points} points")
         else:
-            print("Classement actuel :\n")
+            print("Classement actuel :\n") if not last_display else print("Classement final : \n")
 
             sorted_list = sorted(player_list, key=lambda x: x.tournament_points, reverse=True)
             for player in sorted_list:
-                print(f"    {player} -> {player.tournament_points}")
+                print(f"    {player} -> {player.tournament_points} points")
 
         print("\n")
+
+    @staticmethod
+    def display_lonely_players_list(lonely_players_list):
+        print("liste des joueurs n'ayant pas joués durant les derniers rounds: ")
+        print(lonely_players_list)
+        print("NOTE: Affichage n'existant que pour présenter le fonctionnement "
+              "d'un tournoi avec des joueurs impairs\n\n")
 
     @staticmethod
     def already_added(old_chess_id) -> None:
@@ -184,13 +200,17 @@ class View:
 
     @staticmethod
     def display_tournaments_list(tournaments_list):
+        if len(tournaments_list) == 0:
+            View.no_tournament_found()
+            return
+
         print("Liste des tournois enregistrés :\n")
         [print(f"   - {tournament}") for tournament in tournaments_list]
         print("   Q) pour quitter")
 
     @staticmethod
     def choose_tournament_to_display() -> str:
-        print("\nDe quel tournoi souhaitez-vous consulter les statistiques ?")
+        print("\nChoisissez un tournoi parmi ceux dans la liste")
         return input("")
 
     @staticmethod
@@ -256,15 +276,24 @@ class View:
 
     @staticmethod
     def display_rounds_info(rounds_list, odd_players):
+        if len(rounds_list) == 0:
+            print("Le premier tour n'a pas encore commencé.\n")
+            return
+
         for r in rounds_list:
             print(f"Tour n° {r.round_name}")
-            print(f"  Début du tour {r.starting_time}")
-            print(f"  Fin du tour {r.ending_time}")
+            print(f"  Début du tour : {r.starting_time}")
+            print(f"  Fin du tour : {r.ending_time}")
             if odd_players:
                 print(f"  Joueur sans partie : {r.lonely_player}")
 
             for i, game in enumerate(r.games_list):
-                print(f"\n  Partie n°{i+1} :")
+                print(f"\n  Partie n°{i + 1} :")
                 print(f"    {game.player_one} contre {game.player_two}")
-                print(f"    {game.game_result}")
+                print("    La partie n'est pas terminée") if not game.game_result \
+                    else print(f"    {game.game_result}")
             print("")
+
+    @staticmethod
+    def all_tournaments_are_finished():
+        print("Il n'y a aucun tournoi en cours !")

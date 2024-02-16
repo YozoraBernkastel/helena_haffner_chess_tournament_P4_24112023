@@ -75,13 +75,13 @@ class Round:
         return [i for i in self.tournament.players_list if op.countOf(self.tournament.lonely_players, i) == 0]
 
     def add_game(self, new):
-        if type(new) == Game:
+        if isinstance(new, Game):
             self._games_list.append(new)
             return
-        if type(new) == list:
+        if isinstance(new, list):
             [self.add_game(game) for game in new]
 
-    # remove the lonely player of the round to the players_list
+    # remove the lonely player of the round of the players_list
     def choose_lonely_player(self):
         not_lonely_list = self.not_lonely_yet_list(self)
         round_lonely_player = random.choice(not_lonely_list)
@@ -89,9 +89,7 @@ class Round:
 
     def compute_lonely(self):
         # if there is more rounds than players number,
-        if len(self.tournament.lonely_players) >= len(self.tournament.players_list):
-            # reset the lonely players list when all of them skipped a round
-            self.tournament.lonely_players.clear()
+        self.tournament.reset_lonely_players_list()
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
@@ -116,8 +114,10 @@ class Round:
                     count = 0
 
                 possible_opponents = [opponent for opponent in round_players if opponent is not player]
-                possible_opponents = self.tournament.no_repeat_game(player, possible_opponents) if len(self.players_list) > 4 \
-                    else possible_opponents
+
+                if len(self.players_list) > 3:
+                    possible_opponents = self.tournament.no_repeat_game(player, possible_opponents)
+
                 if len(possible_opponents) == 0:
                     continue
 
@@ -129,18 +129,28 @@ class Round:
     def create_games(self):
         if len(self.games_list) > 0:
             self.games_list.clear()
-        round_players_list = self.compute_lonely() if self.tournament.odd_players_number() else self.tournament.players_list
-        round_players_list = self.sort_custom_player_list(round_players_list)
-        self.round_matchmaking(round_players_list)
 
+        round_players_list = self.tournament.players_list
+        if self.tournament.odd_players_number():
+            round_players_list = self.compute_lonely()
+
+        round_players_list = self.sort_players_list(round_players_list)
+        self.round_matchmaking(round_players_list)
         self.tournament.lonely_players.append(self.lonely_player)
 
     @staticmethod
-    def sort_custom_player_list(players_list):
+    def sort_tournament_points_player_list(players_list):
+        return sorted(players_list, key=lambda x: x.tournament_points, reverse=True) \
+
+
+    @staticmethod
+    def sort_total_points_player_list(players_list):
         return sorted(players_list, key=lambda x: x.total_points, reverse=True)
 
-    def sort_player_list(self):
-        return self.sort_custom_player_list(self.tournament.players_list)
+    def sort_players_list(self, players_list):
+        return self.sort_tournament_points_player_list(players_list) \
+            if int(self.round_name) > 1 \
+            else self.sort_total_points_player_list(players_list)
 
     def convert_data(self) -> dict:
         round_info = dict()
@@ -148,8 +158,7 @@ class Round:
         round_info["starting time"] = self.starting_time
         round_info["ending time"] = self.ending_time
         if self.tournament.odd_players_number():
-            round_info["player without game"] = (f"{self.lonely_player.firstname} {self.lonely_player.family_name}"
-                                                 f"({self.lonely_player.chess_id})")
+            round_info["player without game"] = self.lonely_player.format_data(False)
         round_info["games"] = [game.convert_data() for game in self.games_list]
         return round_info
 
@@ -168,6 +177,3 @@ class Round:
             game.game_result = g["result"]
 
             self.add_game(game)
-
-
-
