@@ -81,7 +81,7 @@ class Round:
         if isinstance(new, list):
             [self.add_game(game) for game in new]
 
-    # remove the lonely player of the round to the players_list
+    # remove the lonely player of the round of the players_list
     def choose_lonely_player(self):
         not_lonely_list = self.not_lonely_yet_list(self)
         round_lonely_player = random.choice(not_lonely_list)
@@ -136,7 +136,6 @@ class Round:
 
         round_players_list = self.sort_players_list(round_players_list)
         self.round_matchmaking(round_players_list)
-
         self.tournament.lonely_players.append(self.lonely_player)
 
     @staticmethod
@@ -159,8 +158,7 @@ class Round:
         round_info["starting time"] = self.starting_time
         round_info["ending time"] = self.ending_time
         if self.tournament.odd_players_number():
-            round_info["player without game"] = (f"{self.lonely_player.firstname} {self.lonely_player.family_name}"
-                                                 f"({self.lonely_player.chess_id})")
+            round_info["player without game"] = self.lonely_player.format_data(False)
         round_info["games"] = [game.convert_data() for game in self.games_list]
         return round_info
 

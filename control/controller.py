@@ -91,6 +91,7 @@ class Controller:
     def rounds_generation(self, tournament):
         while len(tournament.rounds_list) != tournament.number_of_rounds:
             around = tournament.create_round()
+            tournament.save()
             View.display_round_info(around)
             self.games_generation(around, tournament)
 
@@ -184,8 +185,8 @@ class Controller:
             elif check_more == "2":
                 View.display_rounds_info(tournament.rounds_list, tournament.odd_players_number())
 
-    def reconstruct_selected_tournament(self):
-        this_tournament = self.which_tournament(self.tournaments_list())
+    def reconstruct_selected_tournament(self, tournaments_list):
+        this_tournament = self.which_tournament(tournaments_list)
         if not this_tournament or helper.is_user_quits(this_tournament):
             return False
 
@@ -196,7 +197,7 @@ class Controller:
         return Tournament.reconstruction(tournament_path, this_tournament)
 
     def tournament_info(self) -> None:
-        tournament = self.reconstruct_selected_tournament()
+        tournament = self.reconstruct_selected_tournament(self.tournaments_list())
         if isinstance(tournament, Tournament):
             View.display_tournament_info(tournament)
             self.more_info(tournament)
@@ -207,5 +208,5 @@ class Controller:
             View.all_tournaments_are_finished()
             return
 
-        tournament = self.reconstruct_selected_tournament()
+        tournament = self.reconstruct_selected_tournament(unfinished_tournaments_list)
         self.tournament_creation(tournament, True)

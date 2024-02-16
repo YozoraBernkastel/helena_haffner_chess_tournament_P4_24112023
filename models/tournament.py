@@ -4,6 +4,7 @@ from export.export_tournament_data import export_tournament_data
 import uuid
 import datetime
 import json
+from os import path, stat
 
 
 class Tournament:
@@ -200,24 +201,25 @@ class Tournament:
 
     @classmethod
     def reconstruction(cls, file_path: str, tournament_name):
-        with open(f"{file_path}/{tournament_name}.json", 'r') as f:
-            tournament_data = json.load(f)
-        tournament = Tournament(tournament_data["name"], tournament_data["location"],
-                                tournament_data["number of players"],
-                                tournament_data["total number of rounds"], False)
-        tournament.id = tournament_data["id"]
-        tournament.description = tournament_data["description"]
-        tournament.starting_time = tournament_data["starting time"]
-        tournament.set_ending_time(tournament_data["ending time"])
-        tournament.export_name = f"{tournament_data['name']}_{tournament_data['starting time']}"
+        if path.exists(file_path) and stat(file_path).st_size != 0:
+            with open(f"{file_path}/{tournament_name}.json", 'r') as f:
+                tournament_data = json.load(f)
+            tournament = Tournament(tournament_data["name"], tournament_data["location"],
+                                    tournament_data["number of players"],
+                                    tournament_data["total number of rounds"], False)
+            tournament.id = tournament_data["id"]
+            tournament.description = tournament_data["description"]
+            tournament.starting_time = tournament_data["starting time"]
+            tournament.set_ending_time(tournament_data["ending time"])
+            tournament.export_name = f"{tournament_data['name']}_{tournament_data['starting time']}"
 
-        players_list = Player.reconstruct_player(file_path)
-        tournament.add_player(players_list, False)
-        tournament.reconstruct_rounds(tournament_data["list of rounds"])
-        if tournament.odd_players_number():
-            tournament.lonely_players = tournament.rounds_list[-1].lonely_player
+            players_list = Player.reconstruct_player(file_path)
+            tournament.add_player(players_list, False)
+            tournament.reconstruct_rounds(tournament_data["list of rounds"])
+            if tournament.odd_players_number() and len(tournament.rounds_list) > 0:
+                tournament.lonely_players = tournament.rounds_list[-1].lonely_player
 
-        return tournament
+            return tournament
 
     def reconstruct_rounds(self, rounds_data: list):
         for r in rounds_data:
@@ -225,6 +227,9 @@ class Tournament:
             around.starting_time = r["starting time"]
             around.ending_time = r["ending time"]
             if self.odd_players_number():
-                around.lonely_player = r["player without game"]
+                for player in around.tournament.players_list:
+                    if player.chess_id == r["player without game"]["id"]:
+                        around.lonely_player = player
+
             around.reconstruct_games(r["games"])
             self.add_round(around)

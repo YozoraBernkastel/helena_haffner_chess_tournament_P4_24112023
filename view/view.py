@@ -210,7 +210,7 @@ class View:
 
     @staticmethod
     def choose_tournament_to_display() -> str:
-        print("\nDe quel tournoi souhaitez-vous consulter les statistiques ?")
+        print("\nChoisissez un tournoi parmi ceux dans la liste")
         return input("")
 
     @staticmethod
@@ -276,6 +276,10 @@ class View:
 
     @staticmethod
     def display_rounds_info(rounds_list, odd_players):
+        if len(rounds_list) == 0:
+            print("Le premier tour n'a pas encore commencé.\n")
+            return
+
         for r in rounds_list:
             print(f"Tour n° {r.round_name}")
             print(f"  Début du tour : {r.starting_time}")
