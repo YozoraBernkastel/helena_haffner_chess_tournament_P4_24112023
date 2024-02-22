@@ -1,6 +1,6 @@
 # helena_haffner_chess_tournament_P4_24112023
 
-##Lancement du programme (environnement virtuel activé)
+## Lancement du programme (environnement virtuel activé)
 ```shell
 python3 main.py
 ```
