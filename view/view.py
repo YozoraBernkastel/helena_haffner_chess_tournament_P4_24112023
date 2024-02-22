@@ -66,8 +66,8 @@ class View:
             return int(players_number)
 
     @staticmethod
-    def asks_chess_id() -> str:
-        print("\nVeuillez entrer les informations du joueur")
+    def asks_chess_id(registration_number) -> str:
+        print(f"\nVeuillez entrer les informations du joueur n° {registration_number}")
         print("Identifiant national d’échecs :")
         return input("")
 
@@ -187,8 +187,18 @@ class View:
               "d'un tournoi avec des joueurs impairs\n\n")
 
     @staticmethod
-    def already_added(old_chess_id) -> None:
-        print(f"Le joueur id {old_chess_id} a déjà été ajouté à la liste des joueurs du tournoi\n")
+    def display_players_id_error(chess_id, already_registered, wrong_format) -> None:
+        if chess_id == "":
+            print("Vous n'avez entrez aucun identifiant.\n")
+            return
+        if already_registered:
+            print(f"Le joueur id {chess_id} a déjà été ajouté à la "
+                  f"liste des joueurs prenant part au tournoi.\n")
+            return
+        if wrong_format:
+            print(f"L'id {chess_id} ne respecte pas la norme concernant "
+                  f"les identifiants nationaux d'échecs "
+                  f"(deux lettres suivies de cinq chiffres).\n")
 
     @staticmethod
     def known_player_prompt(chess_id) -> None:
