@@ -7,7 +7,6 @@ class Game:
         self._player_two = player_two
         self._round = round_object
         self._tournament = round_object.tournament
-        self._game_id = f"{round}-{player_one.chess_id}-{player_two}"
         self._game_result = False
 
     def __repr__(self):
@@ -31,10 +30,6 @@ class Game:
         return self._tournament
 
     @property
-    def game_id(self):
-        return self._game_id
-
-    @property
     def game_result(self):
         return self._game_result
 
@@ -47,12 +42,8 @@ class Game:
     def player_two(self, new: Player):
         self._player_two = new
 
-    @belong_round.setter
-    def belong_round(self, new: str):  # utile ????
-        self._round = new
-
     @tournament.setter
-    def tournament(self, new: str):  # utile ????
+    def tournament(self, new: str):
         self._tournament = new
 
     @game_result.setter

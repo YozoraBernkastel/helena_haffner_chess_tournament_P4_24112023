@@ -1,2 +1,2 @@
 AUTOCOMPLETE = False
-EXPORT_FOLDER = "outputs/"
+EXPORT_FOLDER = "data/"

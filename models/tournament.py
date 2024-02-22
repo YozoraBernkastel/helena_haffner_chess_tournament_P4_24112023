@@ -10,20 +10,19 @@ from os import path, stat
 class Tournament:
     def __init__(self, tournament_name: str, location: str, number_of_players: int,  number_of_rounds: int,
                  creation=True):
-        self._name = tournament_name
-        self._location = location
-        self._number_of_players = number_of_players
+        self._name: str = tournament_name
+        self._location: str = location
+        self._number_of_players: int = number_of_players
         self._players_list: list = []
-        self._rounds_list = []
+        self._rounds_list: list = []
         self._lonely_players: list = []
-        self._number_of_rounds = number_of_rounds
-        self._id = uuid.uuid1()
-        # todo quel genre de description ? Une parlant de détails spécificiques décidés avant le tournoi ou plutôt
-        #  des commentaires à faire suite au déroulé du tournoi (donc à ajouter en fin de tournoi) ?
-        self._description = ""
-        self._starting_time = str(datetime.datetime.now().replace(microsecond=0))
-        self._ending_time = "Le tournoi est en cours"
-        self._export_name = f"{self.name}_{self.starting_time}"
+        self._number_of_rounds: int = number_of_rounds
+        self._actual_round: int = len(self._rounds_list)+1
+        self._id: uuid = uuid.uuid1()
+        self._description: str = ""
+        self._starting_time: datetime = str(datetime.datetime.now().replace(microsecond=0))
+        self._ending_time: datetime = "Le tournoi est en cours"
+        self._export_name: str = f"{self.name}_{self.starting_time}"
         if creation:
             self.save()
 
@@ -61,6 +60,10 @@ class Tournament:
     @property
     def number_of_rounds(self):
         return self._number_of_rounds
+
+    @property
+    def actual_round_number(self):
+        return self._actual_round
 
     @property
     def id(self):
@@ -110,6 +113,9 @@ class Tournament:
     def description(self, new):
         self._description = new
 
+    def increment_actual_round_number(self):
+        self._actual_round = len(self.rounds_list) + 1
+
     # methods
     def reset_lonely_players_list(self) -> None:
         """
@@ -124,9 +130,9 @@ class Tournament:
         return self.number_of_players % 2 != 0
 
     def create_round(self):
-        around_the_world = Round(self, len(self.rounds_list) + 1)
+        self.increment_actual_round_number()
+        around_the_world = Round(self, self.actual_round_number)
         around_the_world.create_games()
-
         self.rounds_list.append(around_the_world)
 
         return around_the_world
@@ -158,25 +164,22 @@ class Tournament:
         return ((game.player_one is actual_player and game.player_two is opponent)
                 or (game.player_one is opponent and game.player_two is actual_player))
 
+    def check_earlier_rounds(self, rounds_list, actual_player, opponent) -> bool:
+        for r in rounds_list:
+            for game in r.games_list:
+                if self.was_already_played(actual_player, opponent, game):
+                    return True
+        return False
+
     def no_repeat_game(self, actual_player, round_possible_opponents: list) -> list:
         possible_opponents = []
         for opponent in round_possible_opponents:
-            already_played = False
             if len(self.rounds_list) < len(self.players_list) - 2:
-                for r in self.rounds_list:
-                    for game in r.games_list:
-                        if self.was_already_played(actual_player, opponent, game):
-                            already_played = True
-                            break
+                already_played = self.check_earlier_rounds(self.rounds_list, actual_player, opponent)
                 if not already_played:
                     possible_opponents.append(opponent)
             else:
-                for r in self.rounds_list[-2:]:
-                    for game in r.games_list:
-                        if ((game.player_one is actual_player and game.player_two is opponent) or
-                                (game.player_one is opponent and game.player_two is actual_player)):
-                            already_played = True
-                            break
+                already_played = self.check_earlier_rounds(self.rounds_list[-2:], actual_player, opponent)
                 if not already_played:
                     possible_opponents.append(opponent)
 

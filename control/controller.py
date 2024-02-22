@@ -74,10 +74,7 @@ class Controller:
         loop_count = 0
 
         while chess_id == "" or already_registered or self.wrong_format(chess_id):
-            if (chess_id != "" and (already_registered or self.wrong_format)
-                    or (chess_id == "" and loop_count > 0)):
-                View.display_players_id_error(chess_id, already_registered, self.wrong_format)
-
+            View.display_players_id_error(chess_id, loop_count, already_registered, self.wrong_format)
             loop_count += 1
             chess_id: str = View.asks_chess_id(registration_number)
             already_registered: bool = helper.already_in_tournament(chess_id, tournament)
@@ -182,6 +179,7 @@ class Controller:
             return False
 
         View.display_tournaments_list(tournaments_list)
+        View.quit_option_display()
         this_tournament: str = ""
         existing_tournament = False
 
