@@ -28,7 +28,6 @@ class Player:
 
     @property
     def birthdate(self):
-        # todo il faut un format précis
         return self._birthdate
 
     @property
@@ -69,7 +68,7 @@ class Player:
         self._tournament_points += new
 
     # Methods
-    def player_save(self):
+    def player_save(self) -> None:
         export_player_list(self)
 
     def format_data(self, all_info=True) -> dict:

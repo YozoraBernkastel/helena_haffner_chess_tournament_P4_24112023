@@ -103,7 +103,7 @@ class Tournament:
         self._starting_time = new
 
     # not using the property setter as the function doesn't necessary need an argument to set ending_time
-    def set_ending_time(self, new=""):
+    def set_ending_time(self, new="") -> None:
         if new == "":
             self._ending_time = str(datetime.datetime.now().replace(microsecond=0))
             return
@@ -113,7 +113,7 @@ class Tournament:
     def description(self, new):
         self._description = new
 
-    def increment_actual_round_number(self):
+    def increment_actual_round_number(self) -> None:
         self._actual_round = len(self.rounds_list) + 1
 
     # methods
@@ -129,7 +129,7 @@ class Tournament:
     def odd_players_number(self) -> bool:
         return self.number_of_players % 2 != 0
 
-    def create_round(self):
+    def create_round(self) -> Round:
         self.increment_actual_round_number()
         around_the_world = Round(self, self.actual_round_number)
         around_the_world.create_games()
@@ -185,7 +185,7 @@ class Tournament:
 
         return possible_opponents
 
-    def save(self):
+    def save(self) -> None:
         export_tournament_data(self)
 
     def convert_data(self) -> dict:
@@ -224,7 +224,7 @@ class Tournament:
 
             return tournament
 
-    def reconstruct_rounds(self, rounds_data: list):
+    def reconstruct_rounds(self, rounds_data: list) -> None:
         for r in rounds_data:
             around = Round(self, int(r["name"]))
             around.starting_time = r["starting time"]

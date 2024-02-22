@@ -3,6 +3,7 @@ from os import path
 import re
 from settings.settings import EXPORT_FOLDER
 from models.tournament import Tournament
+from models.tournament import Round
 from models.player import Player
 import control.controller_helper as helper
 from view.view import View
@@ -16,7 +17,7 @@ class Controller:
         self._tournaments_folder = f"{EXPORT_FOLDER}tournaments/"
         self._global_players_folder = f"{EXPORT_FOLDER}global_players_list/"
 
-    def display_menu(self):
+    def display_menu(self) -> None:
         choice = View.display_menu()
 
         if choice == "1":
@@ -32,7 +33,7 @@ class Controller:
             return
 
     @staticmethod
-    def initiate_tournament():
+    def initiate_tournament() -> Tournament:
         tournament_name: str = View.tournament_name()
         tournament_location: str = View.tournament_location()
         description: str = View.tournament_description()
@@ -55,6 +56,9 @@ class Controller:
         :param chess_id: one string given by the user
         :return: bool
         """
+        if chess_id == "":
+            return True
+
         temp = re.findall(r'\d+', chess_id)
         digits_in_id: list[int] = list(map(int, temp))
 
@@ -62,7 +66,7 @@ class Controller:
                 or chess_id[1].isdigit()
                 or len(str(digits_in_id[0])) != 5)
 
-    def player_id_registration(self, tournament: Tournament, registration_number: int):
+    def player_id_registration(self, tournament: Tournament, registration_number: int) -> str:
         """
         Asks the valid id of the new player who will be added to the tournament.
         :param tournament: Tournament class object
@@ -72,17 +76,19 @@ class Controller:
         chess_id = ""
         already_registered = False
         loop_count = 0
+        wrong_format = True
 
-        while chess_id == "" or already_registered or self.wrong_format(chess_id):
-            View.display_players_id_error(chess_id, loop_count, already_registered, self.wrong_format)
+        while chess_id == "" or already_registered or wrong_format:
+            View.display_players_id_error(chess_id, loop_count, already_registered, wrong_format)
             loop_count += 1
             chess_id: str = View.asks_chess_id(registration_number)
             already_registered: bool = helper.already_in_tournament(chess_id, tournament)
+            wrong_format: bool = self.wrong_format(chess_id)
 
         return chess_id
 
     @staticmethod
-    def create_player(tournament, chess_id):
+    def create_player(tournament: Tournament, chess_id: str) -> Player:
         id_exist, this_player = helper.is_already_known_id(chess_id)
 
         if id_exist:
@@ -95,7 +101,7 @@ class Controller:
 
         return Player(firstname, name, birthdate, chess_id, total_points)
 
-    def players_registration(self, tournament):
+    def players_registration(self, tournament: Tournament) -> None:
         created_players = len(tournament.players_list)
 
         while tournament.number_of_players > created_players:
@@ -107,14 +113,14 @@ class Controller:
         View.display_players_score(tournament.players_list, True)
 
     @staticmethod
-    def games_generation(around, tournament):
+    def games_generation(around: Round, tournament: Tournament) -> None:
         for game in around.games_list:
             if not game.game_result:
                 res: str = View.asks_result(game)
                 game.set_result(res)
                 export_tournament_data(tournament)
 
-    def rounds_generation(self, tournament):
+    def rounds_generation(self, tournament: Tournament) -> None:
         while len(tournament.rounds_list) != tournament.number_of_rounds:
             around = tournament.create_round()
             tournament.save()
@@ -129,7 +135,7 @@ class Controller:
                 View.display_lonely_players_list(tournament.lonely_players)
 
     @staticmethod
-    def close_tournament(tournament):
+    def close_tournament(tournament: Tournament) -> None:
         tournament.set_ending_time()
         export_tournament_data(tournament, True)
         remove_tournament_from_unfinished_list(tournament)
@@ -189,7 +195,7 @@ class Controller:
 
         return this_tournament
 
-    def tournament_path_creation(self, this_tournament):
+    def tournament_path_creation(self, this_tournament: str):
         tournament_path = f"{self._tournaments_folder}{this_tournament}"
         if not path.exists(tournament_path):
             View.tournament_folder_not_found()
@@ -198,7 +204,7 @@ class Controller:
         return tournament_path
 
     @staticmethod
-    def more_info(tournament) -> None:
+    def more_info(tournament: Tournament) -> None:
         check_more = True
         while check_more:
             check_more = View.this_tournament_menu()

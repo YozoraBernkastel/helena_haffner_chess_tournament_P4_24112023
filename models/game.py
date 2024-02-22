@@ -50,19 +50,26 @@ class Game:
     def game_result(self, result):
         self._game_result = result
 
-    def victory_points(self, player: Player):
+    def victory_points(self, player: Player) -> None:
+        """
+        add one point to the winner in the tournament and the global players list
+        :param player: winner of the game
+        """
         player.total_points = 1.0
         player.tournament_points = 1.0
         self.game_result = f"victoire de {player}"
 
-    def stalemate_points(self):
+    def stalemate_points(self) -> None:
+        """
+        add half a point in the tournament and the global players list
+        """
         self._player_one.total_points = 0.5
         self._player_one.tournament_points = 0.5
         self._player_two.total_points = 0.5
         self._player_two.tournament_points = 0.5
         self.game_result = "match nul"
 
-    def set_result(self, res: str):
+    def set_result(self, res: str) -> None:
         if res == "1":
             self.victory_points(self.player_one)
             return

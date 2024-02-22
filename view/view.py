@@ -20,7 +20,7 @@ class View:
         return location_choice
 
     @staticmethod
-    def quit_option_display():
+    def quit_option_display() -> None:
         print("   Q) pour quitter")
 
     @staticmethod
@@ -57,7 +57,7 @@ class View:
         return choice
 
     @staticmethod
-    def tournament_description():
+    def tournament_description() -> str:
         print("Description du tournoi (touche entrée pour passer) :")
         return input("")
 
@@ -178,14 +178,14 @@ class View:
         print("\n")
 
     @staticmethod
-    def display_lonely_players_list(lonely_players_list):
+    def display_lonely_players_list(lonely_players_list) -> None:
         print("liste des joueurs n'ayant pas joués durant les derniers rounds: ")
         print(lonely_players_list)
         print("NOTE: Affichage n'existant que pour présenter le fonctionnement "
               "d'un tournoi avec des joueurs impairs\n\n")
 
     @staticmethod
-    def display_players_id_error(chess_id,  loop_count, already_registered, wrong_format) -> None:
+    def display_players_id_error(chess_id: str, loop_count: int, already_registered: bool, wrong_format: bool):
         if loop_count == 0:
             return
         if chess_id == "":
@@ -209,7 +209,7 @@ class View:
         print("La base de données est vide")
 
     @staticmethod
-    def display_tournaments_list(tournaments_list):
+    def display_tournaments_list(tournaments_list: list) -> None:
         if len(tournaments_list) == 0:
             View.no_tournament_found()
             return
@@ -223,7 +223,7 @@ class View:
         return input("")
 
     @staticmethod
-    def display_report_general_menu():
+    def display_report_general_menu() -> str:
         choice = ""
         check_answer = False
         while not check_answer:
@@ -244,13 +244,13 @@ class View:
         return choice
 
     @staticmethod
-    def tournament_folder_not_found():
+    def tournament_folder_not_found() -> None:
         print("Le dossier du tournoi n'a pas été trouvé.")
         print("Peut-être a-t-il été supprimé, déplacé ou renommé entre le moment où "
               "la liste des tournoi a été faite et celui où vous avez fait votre choix")
 
     @staticmethod
-    def display_tournament_info(tournament: Tournament):
+    def display_tournament_info(tournament: Tournament) -> None:
         print(f"Nom du Tournoi : {tournament.name}")
         print(f"Localisation : {tournament.location}")
         print(f"Description : {tournament.description}")
@@ -260,7 +260,7 @@ class View:
         print(f"Nombre de tours : {tournament.number_of_rounds}\n")
 
     @staticmethod
-    def this_tournament_menu():
+    def this_tournament_menu() -> str:
         print("Souhaitez-vous faire autre chose ?\n")
         check_answer = False
         choice = ""
@@ -275,7 +275,7 @@ class View:
         return choice
 
     @staticmethod
-    def display_players_info(players_list):
+    def display_players_info(players_list: list) -> None:
         for p in players_list:
             print(f"Nom : {p.family_name}")
             print(f"Prénom : {p.firstname}")
@@ -284,7 +284,7 @@ class View:
             print(f"Points : {p.total_points}\n")
 
     @staticmethod
-    def display_rounds_info(rounds_list, odd_players):
+    def display_rounds_info(rounds_list: list, odd_players: int) -> None:
         if len(rounds_list) == 0:
             print("Le premier tour n'a pas encore commencé.\n")
             return
@@ -304,5 +304,5 @@ class View:
             print("")
 
     @staticmethod
-    def all_tournaments_are_finished():
+    def all_tournaments_are_finished() -> None:
         print("Il n'y a aucun tournoi en cours !")
