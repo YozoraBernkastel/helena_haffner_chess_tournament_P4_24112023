@@ -20,6 +20,10 @@ class View:
         return location_choice
 
     @staticmethod
+    def quit_option_display():
+        print("   Q) pour quitter")
+
+    @staticmethod
     def display_menu() -> str:
         """
         Offers to the user the possibility to create a tournament, to display the statistics or to quit.
@@ -29,10 +33,10 @@ class View:
 
         while not check_answer:
             print("\nBienvenue ! Que souhaitez-vous faire ?\n")
-            print("    1) Créer un tournoi")
-            print("    2) Voir les statistiques")
-            print("    3) Continuer un tournoi en cours")
-            print("    Q) Quitter\n")
+            print("   1) Créer un tournoi")
+            print("   2) Voir les statistiques")
+            print("   3) Continuer un tournoi en cours")
+            View.quit_option_display()
             choice = input("")
             choice = choice.strip()
 
@@ -59,15 +63,15 @@ class View:
 
     @staticmethod
     def number_of_players() -> int:
-        players_number = 0
-        while players_number < 2:
+        players_number = ""
+        while players_number == "" or not players_number.isdigit() or int(players_number) < 2:
             print("Combien de joueurs participeront au tournoi ?")
             players_number = input("")
-            return int(players_number)
+        return int(players_number)
 
     @staticmethod
-    def asks_chess_id() -> str:
-        print("\nVeuillez entrer les informations du joueur")
+    def asks_chess_id(registration_number) -> str:
+        print(f"\nVeuillez entrer les informations du joueur n° {registration_number}")
         print("Identifiant national d’échecs :")
         return input("")
 
@@ -106,11 +110,6 @@ class View:
 
     @staticmethod
     def asks_result(game: Game) -> str:
-        """
-        :param game: an object Game
-         Asks the result of the Game in param
-        """
-
         choice = ""
         check_answer = False
         while not check_answer:
@@ -129,7 +128,6 @@ class View:
 
             if choice == "1" or choice == "2" or choice == "3":
                 check_answer = True
-
             else:
                 print("Choix invalide")
 
@@ -144,7 +142,7 @@ class View:
         number = ""
         check_answer = False
         while not check_answer:
-            print("\n Nombre total de Rounds ?")
+            print("\nNombre total de Rounds ?")
             number = input("")
             number = number.strip()
 
@@ -187,8 +185,20 @@ class View:
               "d'un tournoi avec des joueurs impairs\n\n")
 
     @staticmethod
-    def already_added(old_chess_id) -> None:
-        print(f"Le joueur id {old_chess_id} a déjà été ajouté à la liste des joueurs du tournoi\n")
+    def display_players_id_error(chess_id,  loop_count, already_registered, wrong_format) -> None:
+        if loop_count == 0:
+            return
+        if chess_id == "":
+            print("Vous n'avez entrez aucun identifiant.\n")
+            return
+        if already_registered:
+            print(f"Le joueur id {chess_id} a déjà été ajouté à la "
+                  f"liste des joueurs prenant part au tournoi.\n")
+            return
+        if wrong_format:
+            print(f"L'id {chess_id} ne respecte pas la norme concernant "
+                  f"les identifiants nationaux d'échecs "
+                  f"(deux lettres suivies de cinq chiffres).\n")
 
     @staticmethod
     def known_player_prompt(chess_id) -> None:
@@ -206,7 +216,6 @@ class View:
 
         print("Liste des tournois enregistrés :\n")
         [print(f"   - {tournament}") for tournament in tournaments_list]
-        print("   Q) pour quitter")
 
     @staticmethod
     def choose_tournament_to_display() -> str:
@@ -223,7 +232,7 @@ class View:
             print("   2) Afficher la liste de tous les joueurs par ordre alphabétique")
             print("   3) Afficher la liste de tous les tournois")
             print("   4) Consulter les informations d'un tournoi")
-            print("   Q) Quitter")
+            View.quit_option_display()
             choice = input("")
 
             valid_choices = ["1", "2", "3", "4", "q", "Q"]
@@ -256,9 +265,9 @@ class View:
         check_answer = False
         choice = ""
         while not check_answer:
-            print("    1) Consulter la liste des joueurs")
-            print("    2) Consulter la liste des tours")
-            print("    Q) Quitter")
+            print("   1) Consulter la liste des joueurs")
+            print("   2) Consulter la liste des tours")
+            View.quit_option_display()
             choice = input("")
 
             if choice == "1" or choice == "2" or choice == "Q" or choice == "q":

@@ -1,3 +1,7 @@
+import os
+from os import path
+import re
+from settings.settings import EXPORT_FOLDER
 from models.tournament import Tournament
 from models.player import Player
 import control.controller_helper as helper
@@ -5,13 +9,9 @@ from view.view import View
 from export.export_tournament_data import (export_tournament_data,
                                            add_tournament_to_unfinished_list,
                                            remove_tournament_from_unfinished_list)
-import os
-from os import path
-from settings.settings import EXPORT_FOLDER
 
 
 class Controller:
-
     def __init__(self):
         self._tournaments_folder = f"{EXPORT_FOLDER}tournaments/"
         self._global_players_folder = f"{EXPORT_FOLDER}global_players_list/"
@@ -49,6 +49,39 @@ class Controller:
         return tournament
 
     @staticmethod
+    def wrong_format(chess_id: str) -> bool:
+        """
+        Check if the given id have the national chess id format (two letters followed by five digit
+        :param chess_id: one string given by the user
+        :return: bool
+        """
+        temp = re.findall(r'\d+', chess_id)
+        digits_in_id: list[int] = list(map(int, temp))
+
+        return (len(chess_id) != 7 or chess_id[0].isdigit()
+                or chess_id[1].isdigit()
+                or len(str(digits_in_id[0])) != 5)
+
+    def player_id_registration(self, tournament: Tournament, registration_number: int):
+        """
+        Asks the valid id of the new player who will be added to the tournament.
+        :param tournament: Tournament class object
+        :param registration_number:
+        :return: a valid chess id
+        """
+        chess_id = ""
+        already_registered = False
+        loop_count = 0
+
+        while chess_id == "" or already_registered or self.wrong_format(chess_id):
+            View.display_players_id_error(chess_id, loop_count, already_registered, self.wrong_format)
+            loop_count += 1
+            chess_id: str = View.asks_chess_id(registration_number)
+            already_registered: bool = helper.already_in_tournament(chess_id, tournament)
+
+        return chess_id
+
+    @staticmethod
     def create_player(tournament, chess_id):
         id_exist, this_player = helper.is_already_known_id(chess_id)
 
@@ -64,18 +97,11 @@ class Controller:
 
     def players_registration(self, tournament):
         created_players = len(tournament.players_list)
+
         while tournament.number_of_players > created_players:
             created_players += 1
-            chess_id = ""
-            already_registered = False
-
-            while chess_id == "" or already_registered:
-                if chess_id != "":
-                    View.already_added(chess_id)
-                chess_id: str = View.asks_chess_id()
-                already_registered: bool = helper.already_in_tournament(chess_id, tournament)
-
-            player = self.create_player(tournament, chess_id)
+            chess_id = self.player_id_registration(tournament, created_players)
+            player: Player = self.create_player(tournament, chess_id)
             tournament.add_player(player)
 
         View.display_players_score(tournament.players_list, True)
@@ -148,12 +174,12 @@ class Controller:
 
     @staticmethod
     def which_tournament(tournaments_list):
-
         if len(tournaments_list) == 0:
             View.no_tournament_found()
             return False
 
         View.display_tournaments_list(tournaments_list)
+        View.quit_option_display()
         this_tournament: str = ""
         existing_tournament = False
 

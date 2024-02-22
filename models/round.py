@@ -93,31 +93,32 @@ class Round:
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
-    def round_matchmaking(self, round_players: list):
-        count = 0
-        full_players_list = []
+    def reset_if_needed(self, count, round_players, full_players_list) -> tuple:
+        if count <= 2:
+            return count, round_players
 
-        for player in round_players:
-            full_players_list.append(player)
+        self.games_list.clear()
+        round_players.clear()
+
+        round_players = [player for player in full_players_list]
+        random.shuffle(round_players)
+        count = 0
+
+        return count, round_players
+
+    def round_matchmaking(self, round_players: list):
+        # copy round_players list in case we need to reset round_players
+        full_players_list: list = [player for player in round_players]
+        count = 0
 
         while len(round_players) > 1:
             count += 1
             for player in round_players:
-                if count > 2:
-                    self.games_list.clear()
-                    round_players.clear()
-
-                    for p in full_players_list:
-                        round_players.append(p)
-
-                    random.shuffle(round_players)
-                    count = 0
-
+                count, round_players = self.reset_if_needed(count, round_players, full_players_list)
                 possible_opponents = [opponent for opponent in round_players if opponent is not player]
 
                 if len(self.players_list) > 3:
                     possible_opponents = self.tournament.no_repeat_game(player, possible_opponents)
-
                 if len(possible_opponents) == 0:
                     continue
 
