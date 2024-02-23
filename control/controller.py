@@ -208,12 +208,11 @@ class Controller:
         check_more = True
         while check_more:
             check_more = View.this_tournament_menu()
+
             if helper.is_user_quits(check_more):
                 check_more = False
-
             elif check_more == "1":
                 View.display_players_info(tournament.players_list)
-
             elif check_more == "2":
                 View.display_rounds_info(tournament.rounds_list, tournament.odd_players_number())
 
@@ -241,4 +240,7 @@ class Controller:
             return
 
         tournament = self.reconstruct_selected_tournament(unfinished_tournaments_list)
+        if not tournament:
+            return
+
         self.tournament_creation(tournament, True)

@@ -29,7 +29,7 @@ def export_player_list(player, folder_path=f"{EXPORT_FOLDER}global_players_list/
     if path.exists(file_path) and stat(file_path).st_size != 0:
         with open(file_path, 'r') as f:
             data = json.load(f)
-        global_folder = folder_path == f"{EXPORT_FOLDER}global_players_list/"
+        global_folder: bool = folder_path == f"{EXPORT_FOLDER}global_players_list/"
         json_data = update_player_list(data, player, global_folder)
 
     else:

@@ -87,9 +87,13 @@ class Player:
         with open(f"{file_path}/players_list.json", "r") as f:
             players_data = json.load(f)
 
-        players_list = [
-            Player(player["firstname"], player["name"], player["birthdate"], player["id"],
-                   player["total points"], False) for player in players_data]
+        players_list = list()
+
+        for player in players_data:
+            p = Player(player["firstname"], player["name"], player["birthdate"], player["id"],
+                       player["total points"], False)
+            p.tournament_points = player["total points"]
+            players_list.append(p)
 
         if alphabetical:
             return sorted(players_list, key=lambda x: x.family_name, reverse=False)

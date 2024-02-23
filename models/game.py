@@ -61,7 +61,7 @@ class Game:
 
     def stalemate_points(self) -> None:
         """
-        add half a point in the tournament and the global players list
+        add half a point in the tournament and the global players list for each player
         """
         self._player_one.total_points = 0.5
         self._player_one.tournament_points = 0.5

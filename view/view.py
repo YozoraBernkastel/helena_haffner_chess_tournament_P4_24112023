@@ -24,6 +24,12 @@ class View:
         print("   Q) pour quitter")
 
     @staticmethod
+    def unknown_option():
+        print(
+            "\nCette option n'existe malheureusement pas,"
+            " veuillez sélectionner une commande valide parmi la liste\n")
+
+    @staticmethod
     def display_menu() -> str:
         """
         Offers to the user the possibility to create a tournament, to display the statistics or to quit.
@@ -50,9 +56,7 @@ class View:
             elif choice == "Q" or choice == "q":
                 break
             else:
-                print(
-                    "\nCette option n'existe malheureusement pas,"
-                    " veuillez sélectionner une commande valide parmi la liste\n")
+                View.unknown_option()
 
         return choice
 
@@ -272,6 +276,8 @@ class View:
 
             if choice == "1" or choice == "2" or choice == "Q" or choice == "q":
                 check_answer = True
+            else:
+                View.unknown_option()
         return choice
 
     @staticmethod
