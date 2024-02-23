@@ -80,7 +80,7 @@ class View:
         return input("")
 
     @staticmethod
-    def players_registration(tournament: Tournament) -> tuple:
+    def players_registration() -> tuple:
         print("Nom de famille :")
         name = input("")
         print("Prénom : ")
