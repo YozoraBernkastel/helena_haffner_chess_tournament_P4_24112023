@@ -88,7 +88,7 @@ class Controller:
         return chess_id
 
     @staticmethod
-    def create_player(tournament: Tournament, chess_id: str) -> Player:
+    def create_player(chess_id: str) -> Player:
         id_exist, this_player = helper.is_already_known_id(chess_id)
 
         if id_exist:
@@ -96,7 +96,7 @@ class Controller:
             firstname, name, birthdate, total_points = this_player["firstname"], this_player["name"], this_player[
                 "birthdate"], this_player["total points"]
         else:
-            firstname, name, birthdate = View.players_registration(tournament)
+            firstname, name, birthdate = View.players_registration()
             total_points = 0
 
         return Player(firstname, name, birthdate, chess_id, total_points)
@@ -107,7 +107,7 @@ class Controller:
         while tournament.number_of_players > created_players:
             created_players += 1
             chess_id = self.player_id_registration(tournament, created_players)
-            player: Player = self.create_player(tournament, chess_id)
+            player: Player = self.create_player(chess_id)
             tournament.add_player(player)
 
         View.display_players_score(tournament.players_list, True)
