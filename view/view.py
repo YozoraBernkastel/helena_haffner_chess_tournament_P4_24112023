@@ -243,7 +243,7 @@ class View:
             if any(choice == valid for valid in valid_choices):
                 check_answer = True
             else:
-                print("\nChoix invalide\n")
+                View.unknown_option()
 
         return choice
 
