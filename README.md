@@ -9,6 +9,11 @@ python3 main.py
 Script permettant d'instancier des tournois d'échecs.
 Par défaut, le nombre de round est fixé à 4.
 
+Dans le fichier settings/settings.py il est possible de mettre AUTOCOMPLETE = True pour tester le programme sans avoir
+à entrer chaque résultat à la main.
+Dans ce même fichier ,il est également possible d'indiquer si on souhaite que les parties du premier tour soient 
+déterminées aléatoirement ou en se basant sur les points globaux.
+
 Le script utilise un système de base de données sous forme de json afin de conserver les informations de chaque tournoi
 -- avec possibilité d'arrêter le script et de reprendre le tournoi un autre jour par exemple.
 

@@ -2,6 +2,7 @@ import random
 import datetime
 import operator as op
 from models.game import Game
+from settings.settings import RANDOM_FIRST_ROUND
 
 
 class Round:
@@ -67,14 +68,14 @@ class Round:
         self._lonely_player = new
 
     # Methods
-    def set_ending_time(self):
+    def set_ending_time(self) -> None:
         self.ending_time = datetime.datetime.now().replace(microsecond=0)
 
     @staticmethod
     def not_lonely_yet_list(self) -> list:
         return [i for i in self.tournament.players_list if op.countOf(self.tournament.lonely_players, i) == 0]
 
-    def add_game(self, new):
+    def add_game(self, new) -> None:
         if isinstance(new, Game):
             self._games_list.append(new)
             return
@@ -82,7 +83,7 @@ class Round:
             [self.add_game(game) for game in new]
 
     # remove the lonely player of the round of the players_list
-    def choose_lonely_player(self):
+    def choose_lonely_player(self) -> None:
         not_lonely_list = self.not_lonely_yet_list(self)
         round_lonely_player = random.choice(not_lonely_list)
         self.lonely_player = round_lonely_player
@@ -93,7 +94,7 @@ class Round:
         self.choose_lonely_player()
         return [p for p in self.tournament.players_list if p is not self._lonely_player]
 
-    def reset_if_needed(self, count, round_players, full_players_list) -> tuple:
+    def reset_if_needed(self, count: int, round_players: list, full_players_list: list) -> tuple:
         if count <= 2:
             return count, round_players
 
@@ -106,7 +107,7 @@ class Round:
 
         return count, round_players
 
-    def round_matchmaking(self, round_players: list):
+    def round_matchmaking(self, round_players: list) -> None:
         # copy round_players list in case we need to reset round_players
         full_players_list: list = [player for player in round_players]
         count = 0
@@ -127,7 +128,7 @@ class Round:
                 round_players.remove(player)
                 round_players.remove(possible_opponents[0])
 
-    def create_games(self):
+    def create_games(self) -> None:
         if len(self.games_list) > 0:
             self.games_list.clear()
 
@@ -140,18 +141,24 @@ class Round:
         self.tournament.lonely_players.append(self.lonely_player)
 
     @staticmethod
-    def sort_tournament_points_player_list(players_list):
-        return sorted(players_list, key=lambda x: x.tournament_points, reverse=True) \
-
+    def sort_tournament_points_player_list(players_list: list) -> list:
+        return sorted(players_list, key=lambda x: x.tournament_points, reverse=True)
 
     @staticmethod
-    def sort_total_points_player_list(players_list):
+    def sort_total_points_player_list(players_list: list) -> list:
         return sorted(players_list, key=lambda x: x.total_points, reverse=True)
 
-    def sort_players_list(self, players_list):
-        return self.sort_tournament_points_player_list(players_list) \
-            if int(self.round_name) > 1 \
-            else self.sort_total_points_player_list(players_list)
+    def sort_players_list(self, players_list: list) -> list:
+        if int(self.round_name) > 1:
+            return self.sort_tournament_points_player_list(players_list)
+
+        if RANDOM_FIRST_ROUND:
+            # need to copy the list as we don't want to empty the tournament players list during the match making
+            random_players_list = [p for p in players_list]
+            random.shuffle(random_players_list)
+            return random_players_list
+
+        return self.sort_total_points_player_list(players_list)
 
     def convert_data(self) -> dict:
         round_info = dict()
@@ -163,7 +170,7 @@ class Round:
         round_info["games"] = [game.convert_data() for game in self.games_list]
         return round_info
 
-    def reconstruct_games(self, games_list):
+    def reconstruct_games(self, games_list: list) -> None:
         for g in games_list:
             player_one = None
             player_two = None
