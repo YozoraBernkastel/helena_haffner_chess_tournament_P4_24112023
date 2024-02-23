@@ -26,6 +26,12 @@ les données du tournoi.
 Le script gère le cas où le nombre de participants à un tournoi est impair et fait en sorte que chacun saute un tour à
 tour de rôle.
 
+## Flake8
+Afin de vérifier que le projet respecte bien la PEP8, il est possible d'utiliser la commande ci-dessous:
+```shell
+flake8
+```
+
 
 Bien que Poetry soit l'environnement virtuel utilisé pour le développement, un fichier **requirements.txt** est présent
 dans les fichiers pour ceux ne souhaitant pas utiliser Poetry.
